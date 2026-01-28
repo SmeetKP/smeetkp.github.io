@@ -3,6 +3,11 @@
 import { useContent } from "../hooks/useContent";
 import { useEffect, useRef, useState, useMemo, useCallback, useSyncExternalStore } from "react";
 import Image from "next/image";
+import ExperienceSection from "./ExperienceSection";
+import { useHighlights } from "@/hooks/useHighlights";
+import HighlightsFloatingBadge from "./HighlightsFloatingBadge";
+import HighlightsDrawer from "./HighlightsDrawer";
+import { exportHighlightsToPDF, copyHighlightsToClipboard, generateShareLink } from "@/utils/exportHighlights";
 
 // Helper to read theme from localStorage (returns null on server)
 const getStoredTheme = () => {
@@ -46,6 +51,7 @@ const SKILL_LEVELS: Record<string, "expert" | "advanced" | "proficient"> = {
 
 export default function ProfessionalMode({ onSwitchMode, onBack }: ProfessionalModeProps) {
   const { content } = useContent();
+  const highlightsHook = useHighlights();
   const timelineRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeSection, setActiveSection] = useState("hero");
@@ -492,46 +498,16 @@ export default function ProfessionalMode({ onSwitchMode, onBack }: ProfessionalM
           </div>
         </section>
 
-        {/* Experience Section - Improved (P1) */}
+        {/* Experience Section - Detailed Accordion (P1) */}
         <section id="section-experience" className="mb-10" ref={timelineRef}>
           <h2 className={`text-2xl md:text-3xl font-bold mb-6 ${isDarkMode ? "text-white" : "text-slate-900"}`}>Experience</h2>
           
-          <div className="space-y-4">
-            {content.experience.map((exp, i) => {
-              const isVisible = i < visibleExperiences;
-              return (
-                <div 
-                  key={i} 
-                  className={`p-6 rounded-2xl border transition-all duration-300 ${
-                    isDarkMode 
-                      ? "bg-slate-800/40 border-slate-700/50 hover:border-blue-500/30" 
-                      : "bg-white border-slate-200 hover:border-blue-400 shadow-sm"
-                  } ${
-                    isVisible ? 'opacity-100' : 'opacity-50'
-                  }`}
-                >
-                  <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
-                    <div>
-                      <h3 className={`text-xl font-bold ${isDarkMode ? "text-white" : "text-slate-900"}`}>{exp.company}</h3>
-                      <p className={`font-medium ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}>{exp.role}</p>
-                    </div>
-                    <div className={`text-sm mt-2 md:mt-0 md:text-right ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
-                      <div className={`font-medium ${isDarkMode ? "text-slate-300" : "text-slate-600"}`}>{exp.period}</div>
-                      <div>{exp.location}</div>
-                    </div>
-                  </div>
-                  <ul className="space-y-2">
-                    {exp.highlights.map((h, j) => (
-                      <li key={j} className={`flex items-start gap-3 leading-relaxed ${isDarkMode ? "text-slate-300" : "text-slate-600"}`}>
-                        <span className={`mt-1.5 text-xs ${isDarkMode ? "text-blue-400" : "text-blue-500"}`}>●</span>
-                        {h}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })}
-          </div>
+          <ExperienceSection 
+            isDarkMode={isDarkMode}
+            onAddHighlight={highlightsHook.addHighlight}
+            onRemoveHighlight={highlightsHook.removeHighlight}
+            isHighlighted={highlightsHook.isHighlighted}
+          />
         </section>
 
         {/* Skills Section - With Proficiency Indicators (P2) */}
@@ -650,6 +626,32 @@ export default function ProfessionalMode({ onSwitchMode, onBack }: ProfessionalM
           </button>
         </div>
       </footer>
+
+      {/* Interview Highlights System */}
+      <HighlightsFloatingBadge
+        count={highlightsHook.highlights.length}
+        onClick={highlightsHook.toggleDrawer}
+        isDarkMode={isDarkMode}
+      />
+      
+      <HighlightsDrawer
+        isOpen={highlightsHook.isDrawerOpen}
+        highlights={highlightsHook.highlights}
+        onClose={() => highlightsHook.setIsDrawerOpen(false)}
+        onRemove={highlightsHook.removeHighlight}
+        onClearAll={highlightsHook.clearAll}
+        onExportPDF={() => exportHighlightsToPDF(highlightsHook.highlights, content.profile.name)}
+        onCopyToClipboard={() => {
+          copyHighlightsToClipboard(highlightsHook.highlights);
+          alert('Highlights copied to clipboard!');
+        }}
+        onGenerateShareLink={() => {
+          const link = generateShareLink(highlightsHook.highlights);
+          navigator.clipboard.writeText(link);
+          alert('Share link copied to clipboard!');
+        }}
+        isDarkMode={isDarkMode}
+      />
     </div>
   );
 }

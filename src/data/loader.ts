@@ -1,7 +1,8 @@
-import { PortfolioContent, ProfileData, ExperienceItem, ProjectItem, SkillCategory, MetricsItem, ContactData } from "@/types/content";
+import { PortfolioContent, ProfileData, ExperienceItem, ExperienceItemDetailed, ProjectItem, SkillCategory, MetricsItem, ContactData } from "@/types/content";
 
 import defaultProfile from "./profile.json";
 import defaultExperience from "./experience.json";
+import defaultExperienceDetailed from "./experience-detailed.json";
 import defaultProjects from "./projects.json";
 import defaultSkills from "./skills.json";
 import defaultMetrics from "./metrics.json";
@@ -18,4 +19,8 @@ const defaultContent: PortfolioContent = {
 
 export async function loadContent(): Promise<PortfolioContent> {
   return defaultContent;
+}
+
+export async function loadDetailedExperience(): Promise<ExperienceItemDetailed[]> {
+  return defaultExperienceDetailed as ExperienceItemDetailed[];
 }

@@ -1,0 +1,462 @@
+[
+  {
+    "company": "Sonova Group",
+    "role": "Manager, Data Engineering, Analytics & GenAI Implementation",
+    "period": "May 2023 - Present",
+    "location": "Berlin, Germany",
+    "locationType": "On-site",
+    "quickStats": {
+      "scale": [
+        "20 countries",
+        "175 users supported",
+        "100+ weekly active users",
+        "21 dashboards",
+        "8 data sources"
+      ],
+      "impactAreas": 8,
+      "achievements": "30+ quantified achievements"
+    },
+    "sections": [
+      {
+        "id": "profile-summary",
+        "title": "Profile Summary",
+        "icon": "🌍",
+        "order": 1,
+        "preview": {
+          "topMetrics": [
+            "20 countries across 5 continents",
+            "175 users supported | 100+ weekly active | 53% daily active"
+          ],
+          "bulletCount": 5
+        },
+        "content": {
+          "bullets": [
+            "Leading enterprise analytics + GenAI delivery across 20 countries: United Kingdom, Ireland, Belgium, Luxembourg, Sweden, Austria, Hungary, Canada, Brazil, USA, Australia, New Zealand, Japan, China, France, Netherlands, Italy, Denmark, Poland, Germany",
+            "Scale & adoption: 175 users supported, 100+ weekly active users, 53% daily active usage",
+            "Delivery footprint: 21 high-impact dashboards, 8 integrated data sources",
+            "Operating model (since May 2025): matrix execution with 3 direct / 4 indirect, partnering with Managing Directors, Sales Directors, Regional Sales Managers, and VP Marketing to align roadmap, value cases, rollouts, and adoption across markets",
+            "Domain context: Audiological care, with enterprise impact across functions and business units"
+          ],
+          "metrics": [
+            {
+              "icon": "🌍",
+              "label": "Countries",
+              "value": "20",
+              "trend": "neutral"
+            },
+            {
+              "icon": "👥",
+              "label": "Users Supported",
+              "value": "175",
+              "trend": "neutral"
+            },
+            {
+              "icon": "📊",
+              "label": "Dashboards",
+              "value": "21",
+              "trend": "neutral"
+            },
+            {
+              "icon": "🔗",
+              "label": "Data Sources",
+              "value": "8",
+              "trend": "neutral"
+            },
+            {
+              "icon": "📈",
+              "label": "Daily Active Usage",
+              "value": "53%",
+              "trend": "up"
+            }
+          ]
+        }
+      },
+      {
+        "id": "enterprise-bi",
+        "title": "Enterprise BI, KPI Standardization & Executive Reporting",
+        "icon": "📊",
+        "order": 2,
+        "preview": {
+          "topMetrics": [
+            "2.1% QoQ sales increase",
+            "60% engagement boost (1,800 users)",
+            "21 executive dashboards"
+          ],
+          "bulletCount": 6
+        },
+        "content": {
+          "bullets": [
+            "Drove enterprise BI and analytics transformation across 20 countries/markets, standardizing KPI definitions and executive performance reporting aligned to OKRs for C-suite decision-making",
+            "Delivered and governed 21 executive dashboards across Sales, Operations, Marketing, and HR, improving stakeholder alignment and accelerating management cadence through consistent KPI interpretation",
+            "Designed and maintained KPI dashboards in Power BI, driving a 2.1% QoQ sales increase and optimizing marketing spend; ensured seamless integration with SAP Analytics Cloud",
+            "Increased engagement through dashboard gamification: 60% boost with a target audience of 1,800",
+            "Personally liaised with the CEO & Marketing VP of Sonova to develop a board reporting KPI suite",
+            "Conducted change management workshops in Berlin, Dortmund, Rotterdam, Belgium, Warsaw, Milan and Paris"
+          ],
+          "metrics": [
+            {
+              "icon": "📈",
+              "label": "QoQ Sales Increase",
+              "value": "2.1%",
+              "trend": "up"
+            },
+            {
+              "icon": "👥",
+              "label": "Users Engaged",
+              "value": "1,800",
+              "trend": "neutral"
+            },
+            {
+              "icon": "🎯",
+              "label": "Engagement Boost",
+              "value": "60%",
+              "trend": "up"
+            },
+            {
+              "icon": "📊",
+              "label": "Executive Dashboards",
+              "value": "21",
+              "trend": "neutral"
+            },
+            {
+              "icon": "🌍",
+              "label": "Countries/Markets",
+              "value": "20",
+              "trend": "neutral"
+            }
+          ]
+        }
+      },
+      {
+        "id": "data-engineering",
+        "title": "Data Engineering, Automation & Platform Reliability",
+        "icon": "🔧",
+        "order": 3,
+        "preview": {
+          "topMetrics": [
+            "75% FTE time reduction",
+            "35% reporting cycle improvement",
+            "30% faster sales forecasting"
+          ],
+          "bulletCount": 3
+        },
+        "content": {
+          "bullets": [
+            "Designed standardized market onboarding pipelines using Databricks + SQL/MS SQL (Azure where relevant) to enable consistent KPIs and reliable cross-country reporting",
+            "Automated data collection and reporting pipelines: Reduced FTE time by 75%, Reduced reporting cycle time by 35%, Improved speed and accuracy of operational dashboards",
+            "Reduced sales forecasting cycle time by ~30% by improving data pipelines, refresh cadence, and reporting workflows to support faster commercial planning"
+          ],
+          "metrics": [
+            {
+              "icon": "⚡",
+              "label": "FTE Time Reduction",
+              "value": "75%",
+              "trend": "up"
+            },
+            {
+              "icon": "⏱️",
+              "label": "Reporting Cycle Improvement",
+              "value": "35%",
+              "trend": "up"
+            },
+            {
+              "icon": "📊",
+              "label": "Faster Sales Forecasting",
+              "value": "30%",
+              "trend": "up"
+            }
+          ]
+        }
+      },
+      {
+        "id": "data-governance",
+        "title": "Data Governance, Access Control & Data Quality",
+        "icon": "🛡️",
+        "order": 4,
+        "preview": {
+          "topMetrics": [
+            "99.9% pipeline reliability",
+            "30% data downtime reduction",
+            "12 jurisdictions compliance"
+          ],
+          "bulletCount": 3
+        },
+        "content": {
+          "bullets": [
+            "Implemented Databricks governance using Unity Catalog to enforce centralized access controls and scalable cross-domain data sharing, strengthening auditability and data product reliability",
+            "Established an enterprise-grade Data Governance Council and deployed automated data quality frameworks (utilizing Great Expectations or similar logic) within CI/CD: Reduced data downtime by 30%, Achieved 99.9% pipeline reliability",
+            "Ensured privacy/regulatory compliance across jurisdictions: EU (GDPR), UK (UK GDPR), Brazil (LGPD), Canada (PIPEDA), USA (CCPA/CPRA), China (PIPL), Japan (APPI), Australia/New Zealand (relevant Privacy Acts)"
+          ],
+          "metrics": [
+            {
+              "icon": "✅",
+              "label": "Pipeline Reliability",
+              "value": "99.9%",
+              "trend": "up"
+            },
+            {
+              "icon": "⬇️",
+              "label": "Data Downtime Reduction",
+              "value": "30%",
+              "trend": "up"
+            },
+            {
+              "icon": "🌐",
+              "label": "Jurisdictions",
+              "value": "12",
+              "trend": "neutral"
+            }
+          ],
+          "subSections": [
+            {
+              "title": "Compliance by Region",
+              "bullets": [
+                "EU: GDPR",
+                "UK: UK GDPR",
+                "Brazil: LGPD",
+                "Canada: PIPEDA",
+                "USA: CCPA/CPRA",
+                "China: PIPL",
+                "Japan: APPI",
+                "Australia/New Zealand: Privacy Acts"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "genai-delivery",
+        "title": "GenAI Delivery, RAG Architecture & AI Governance",
+        "icon": "🤖",
+        "order": 5,
+        "preview": {
+          "topMetrics": [
+            "20% service improvement",
+            "90% hallucination reduction",
+            "1,000+ employees scaled"
+          ],
+          "bulletCount": 5
+        },
+        "content": {
+          "bullets": [
+            "Implemented GenAI apps and chatbots for HR, Operations, and Marketing (requirements → build → rollout → adoption)",
+            "Launched GenAI assistants across priority workflows with governance guardrails, improving service enablement outcomes by ~20%: Service ticket deflection, Product recommendations, HR org insights, New-store onboarding",
+            "Scaled GenAI apps across company verticals (beyond audiological care): Hearing Instruments, Reliability, R&D, HR",
+            "Architected enterprise-scale RAG systems for internal knowledge management: Vector databases (e.g., Pinecone/Milvus), LangChain orchestration, Reduced hallucination rates by 90% and grounded outputs in proprietary corporate data",
+            "Established an AI Governance Board and implemented guardrails to sanitize inputs/outputs: Prevented PII leakage, Ensured compliance with emerging regulations like the EU AI Act, Enabled safe scaling of GenAI tools to 1,000+ employees across diverse jurisdictions"
+          ],
+          "metrics": [
+            {
+              "icon": "📈",
+              "label": "Service Improvement",
+              "value": "20%",
+              "trend": "up"
+            },
+            {
+              "icon": "🎯",
+              "label": "Hallucination Reduction",
+              "value": "90%",
+              "trend": "up"
+            },
+            {
+              "icon": "👥",
+              "label": "Employees Scaled",
+              "value": "1,000+",
+              "trend": "up"
+            }
+          ]
+        }
+      },
+      {
+        "id": "data-apps",
+        "title": "Data Apps & Product Delivery",
+        "icon": "💻",
+        "order": 6,
+        "preview": {
+          "topMetrics": [
+            "React.js strategic analytics app",
+            "Multi-source integration"
+          ],
+          "bulletCount": 1
+        },
+        "content": {
+          "bullets": [
+            "Delivered a React.js strategic analytics app integrating multiple data sources for: HR (org/team planning, team shuffling, budget management), Marketing (qualified lead insights, store prioritization/targeting), Operations (underperformance monitoring, targeted interventions)"
+          ],
+          "subSections": [
+            {
+              "title": "HR Features",
+              "bullets": [
+                "Org/team planning (team shuffling)",
+                "Budget management"
+              ]
+            },
+            {
+              "title": "Marketing Features",
+              "bullets": [
+                "Qualified lead insights",
+                "Store prioritization/targeting"
+              ]
+            },
+            {
+              "title": "Operations Features",
+              "bullets": [
+                "Underperformance monitoring",
+                "Targeted interventions"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "leadership",
+        "title": "Leadership, Agile Delivery & Continuous Improvement",
+        "icon": "💼",
+        "order": 7,
+        "preview": {
+          "topMetrics": [
+            "14 FTE team | 6 countries",
+            "15% retention improvement",
+            "20% sprint velocity increase"
+          ],
+          "bulletCount": 4
+        },
+        "content": {
+          "bullets": [
+            "Led a 14 FTE analytics group during Kaizen week and continued managing the team for 4 months afterward",
+            "Managed a cross-functional Kaizen team of 14 members across 6 countries",
+            "Implemented Agile DataOps methodologies (Scrum/Kanban) and defined distinct technical career ladders: Improved retention by 15%, Increased sprint velocity by 20%",
+            "Used Lean Six Sigma, Eisenhower matrix prioritization, and waste reduction techniques: 60% increase in resource productivity, 15% YoY productivity improvement"
+          ],
+          "metrics": [
+            {
+              "icon": "👥",
+              "label": "Team Size",
+              "value": "14 FTE",
+              "trend": "neutral"
+            },
+            {
+              "icon": "🌍",
+              "label": "Countries",
+              "value": "6",
+              "trend": "neutral"
+            },
+            {
+              "icon": "📈",
+              "label": "Retention Improvement",
+              "value": "15%",
+              "trend": "up"
+            },
+            {
+              "icon": "⚡",
+              "label": "Sprint Velocity Increase",
+              "value": "20%",
+              "trend": "up"
+            },
+            {
+              "icon": "🎯",
+              "label": "Resource Productivity",
+              "value": "60%",
+              "trend": "up"
+            }
+          ]
+        }
+      },
+      {
+        "id": "advanced-analytics",
+        "title": "Advanced Analytics, Optimization & Business Impact",
+        "icon": "📈",
+        "order": 8,
+        "preview": {
+          "topMetrics": [
+            "15% cost reduction",
+            "6% utilization improvement",
+            "5% productivity improvement"
+          ],
+          "bulletCount": 5
+        },
+        "content": {
+          "bullets": [
+            "Deployed workforce optimization models delivering 15% cost reduction while improving operational efficiency",
+            "Applied causal/optimization analytics to workforce planning: Improved utilization by ~6%, Improved productivity by ~5%",
+            "Built predictive forecasting models (Scikit-learn, XGBoost) for in-store performance: Forecasted staffing needs from historical sales + foot traffic, Optimized labor costs",
+            "Sales process optimization: Identified inefficiencies and built Power BI dashboards for daily management, Streamlined operations, increased resource utilization, implemented correct OKRs",
+            "Marketing effectiveness: Campaign performance reporting and Marketing ROI assessments, Built a custom actionable model with Sales/Marketing to improve customer journey and optimize marketing budget"
+          ],
+          "metrics": [
+            {
+              "icon": "💰",
+              "label": "Cost Reduction",
+              "value": "15%",
+              "trend": "up"
+            },
+            {
+              "icon": "📊",
+              "label": "Utilization Improvement",
+              "value": "6%",
+              "trend": "up"
+            },
+            {
+              "icon": "⚡",
+              "label": "Productivity Improvement",
+              "value": "5%",
+              "trend": "up"
+            }
+          ],
+          "subSections": [
+            {
+              "title": "Risk Management",
+              "bullets": [
+                "Developed a strategy with R&D using Porter's 5 forces to navigate the threat of Apple's hearing aid test feature tied to the 2024 AirPods launch",
+                "Improved search ads execution and increased first sales appointments in US, CA, EU regions"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "techStack": {
+      "categories": [
+        {
+          "name": "Data Engineering & Analytics",
+          "technologies": [
+            { "name": "Databricks", "proficiency": "expert" },
+            { "name": "SQL/MS SQL", "proficiency": "expert" },
+            { "name": "Power BI", "proficiency": "expert" },
+            { "name": "Azure", "proficiency": "advanced" },
+            { "name": "SAP Analytics Cloud", "proficiency": "advanced" }
+          ]
+        },
+        {
+          "name": "GenAI & Machine Learning",
+          "technologies": [
+            { "name": "GenAI/Chatbots", "proficiency": "expert" },
+            { "name": "RAG Architecture", "proficiency": "expert" },
+            { "name": "LangChain", "proficiency": "advanced" },
+            { "name": "Pinecone/Milvus", "proficiency": "advanced" },
+            { "name": "Scikit-learn", "proficiency": "advanced" },
+            { "name": "XGBoost", "proficiency": "advanced" }
+          ]
+        },
+        {
+          "name": "Development & Product",
+          "technologies": [
+            { "name": "React.js", "proficiency": "advanced" },
+            { "name": "Python", "proficiency": "expert" },
+            { "name": "Azure DevOps", "proficiency": "advanced" },
+            { "name": "Jira", "proficiency": "advanced" }
+          ]
+        },
+        {
+          "name": "Methodologies & Frameworks",
+          "technologies": [
+            { "name": "Agile/Scrum/Kanban", "proficiency": "expert" },
+            { "name": "Lean Six Sigma", "proficiency": "expert" },
+            { "name": "DataOps", "proficiency": "expert" },
+            { "name": "Data Governance", "proficiency": "expert" }
+          ]
+        }
+      ]
+    }
+  }
+]

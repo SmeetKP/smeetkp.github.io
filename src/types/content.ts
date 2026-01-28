@@ -15,6 +15,64 @@ export interface ExperienceItem {
   highlights: string[];
 }
 
+export interface ExperienceMetric {
+  icon: string;
+  label: string;
+  value: string;
+  trend?: "up" | "down" | "neutral";
+}
+
+export interface ExperienceSubSection {
+  title: string;
+  bullets: string[];
+}
+
+export interface ExperienceSectionContent {
+  bullets: string[];
+  metrics?: ExperienceMetric[];
+  subSections?: ExperienceSubSection[];
+}
+
+export interface ExperienceSection {
+  id: string;
+  title: string;
+  icon: string;
+  order: number;
+  preview: {
+    topMetrics: string[];
+    bulletCount: number;
+  };
+  content: ExperienceSectionContent;
+}
+
+export interface TechnologyItem {
+  name: string;
+  proficiency?: "expert" | "advanced" | "proficient";
+  icon?: string;
+}
+
+export interface TechStackCategory {
+  name: string;
+  technologies: TechnologyItem[];
+}
+
+export interface ExperienceItemDetailed {
+  company: string;
+  role: string;
+  period: string;
+  location: string;
+  locationType?: "On-site" | "Remote" | "Hybrid";
+  quickStats: {
+    scale: string[];
+    impactAreas: number;
+    achievements: string;
+  };
+  sections: ExperienceSection[];
+  techStack?: {
+    categories: TechStackCategory[];
+  };
+}
+
 export interface ProjectItem {
   title: string;
   subtitle: string;
