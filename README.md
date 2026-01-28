@@ -1,5 +1,9 @@
 # Smeet Kumar Patel | Data & AI Leader - Portfolio 2026
 
+[![Deploy to GitHub Pages](https://github.com/SmeetKP/smeetkp.github.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/SmeetKP/smeetkp.github.io/actions/workflows/deploy.yml)
+
+**Live Site:** [https://smeetkp.github.io/](https://smeetkp.github.io/)
+
 A modern, interactive portfolio website built with **Next.js**, **React**, and **TypeScript**. It features a unique dual-mode interface: a sleek "Professional Mode" for recruiters and a gamified "Retro Mode" for a fun, immersive experience.
 
 ## 🌟 Features

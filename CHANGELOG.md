@@ -2,6 +2,36 @@
 
 All notable changes to the Portfolio 2026 project will be documented in this file.
 
+## [1.1.0] - 2026-01-28
+
+### Fixed
+- **SEO/Metadata**: Updated all domain references from `smeetkumarpatel.com` to `smeetkp.github.io`
+- **LinkedIn URL**: Added missing `https://` protocol to contact.json
+- **GamifiedMode Navigation**: Added Back button using `onBack` prop - users can now return to landing page
+- **Sitemap**: Simplified to single root URL (removed non-functional mode query params)
+
+### Added
+- **ErrorBoundary**: Added React Error Boundary component for graceful error handling
+- **ISSUES_CHECKLIST.json**: Comprehensive issue tracking document
+
+### Removed
+- **Placeholder Google Verification**: Removed `your-google-verification-code` placeholder
+- **Unused Preconnect**: Removed `assets.aceternity.com` preconnect (not used)
+- **Twitter Creator**: Removed `@smeetkumarpatel` (unverified handle)
+- **Company Variants**: Removed placeholder company profiles (amazon, google, microsoft)
+- **sharp-cli**: Removed unused dev dependency
+- **Dead Code Cleanup**: Removed 37 unused files (demos, backups, dev artifacts)
+
+### Changed
+- **useContent Hook**: Simplified - removed variant loading logic
+- **loader.ts**: Simplified - removed company variant imports
+
+## [1.0.0] - 2026-01-27
+
+### Added
+- Initial deployment to GitHub Pages at `smeetkp.github.io`
+- GitHub Actions CI/CD workflow
+
 ## [Unreleased] - 2026-01-21
 
 ### Fixed
