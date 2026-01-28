@@ -32,7 +32,7 @@ interface Zone {
   };
 }
 
-export default function GamifiedMode({ onSwitchMode }: GamifiedModeProps) {
+export default function GamifiedMode({ onSwitchMode, onBack }: GamifiedModeProps) {
   const { content } = useContent();
 
   const MIN_X = 5;
@@ -362,12 +362,23 @@ export default function GamifiedMode({ onSwitchMode }: GamifiedModeProps) {
           <button 
             onClick={() => {
               play("click");
+              onBack();
+            }}
+            onMouseEnter={() => play("hover")}
+            className="group px-4 py-2 bg-transparent hover:bg-slate-900/50 border border-transparent hover:border-slate-500/30 text-slate-500 hover:text-white transition-all text-xs tracking-widest uppercase"
+          >
+            <span className="opacity-0 group-hover:opacity-100 transition-opacity">←</span>
+            <span className="group-hover:ml-2 transition-all">Back</span>
+          </button>
+          <button 
+            onClick={() => {
+              play("click");
               onSwitchMode();
             }}
             onMouseEnter={() => play("hover")}
             className="group px-4 py-2 bg-transparent hover:bg-slate-900/50 border border-transparent hover:border-cyan-500/30 text-slate-400 hover:text-cyan-400 transition-all text-xs tracking-widest uppercase"
           >
-            <span className="group-hover:mr-2 transition-all">Exit Construct</span>
+            <span className="group-hover:mr-2 transition-all">Professional Mode</span>
             <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
           </button>
           <a 
