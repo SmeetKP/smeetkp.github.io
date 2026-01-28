@@ -1,0 +1,6 @@
+[
+  { "value": "14+", "label": "Years Experience", "color": "text-blue-400" },
+  { "value": "11", "label": "Countries", "color": "text-emerald-400" },
+  { "value": "70%", "label": "Faster Dev Cycles", "color": "text-amber-400" },
+  { "value": "2.1%", "label": "QoQ Sales Growth", "color": "text-purple-400" }
+]

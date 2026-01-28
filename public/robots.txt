@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://smeetkumarpatel.com/sitemap.xml

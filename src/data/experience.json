@@ -1,0 +1,44 @@
+[
+  {
+    "company": "Sonova Group",
+    "role": "Data Analytics Manager & AI Solutions Architect",
+    "period": "Apr 2023 - Present",
+    "location": "Berlin, Germany",
+    "highlights": [
+      "Led global BI transformation across 11 countries",
+      "Pioneered Gen AI adoption - 70% faster development cycles",
+      "Managed 14-member team with 4 direct reports across 6 countries"
+    ]
+  },
+  {
+    "company": "Felmo GmbH",
+    "role": "Customer Growth & Retention Lead",
+    "period": "Apr 2022 - Mar 2023",
+    "location": "Berlin, Germany",
+    "highlights": [
+      "13% revenue boost via RFM analysis",
+      "Built A/B testing infrastructure"
+    ]
+  },
+  {
+    "company": "JP Morgan & Chase",
+    "role": "Data Science Associate",
+    "period": "Jun 2019 - Mar 2022",
+    "location": "Mumbai, India",
+    "highlights": [
+      "8% MoM acquisition increase via customer segmentation",
+      "Reduced drop-off rates by 7% using multi-armed bandit models"
+    ]
+  },
+  {
+    "company": "Previous Experience",
+    "role": "Various Roles",
+    "period": "2011 - 2019",
+    "location": "Global",
+    "highlights": [
+      "Accenture",
+      "Mastek",
+      "TCS"
+    ]
+  }
+]

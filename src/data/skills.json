@@ -1,0 +1,6 @@
+[
+  { "category": "BI & Data Engineering", "items": ["Power BI", "Tableau", "Databricks", "DBT", "Fivetran"] },
+  { "category": "Programming", "items": ["Python", "SQL", "ML Models", "Statistical Modeling"] },
+  { "category": "Cloud & Tools", "items": ["Azure", "SAP Analytics Cloud", "Google Analytics 4", "API Development", "Data Pipelines"] },
+  { "category": "Methodologies", "items": ["Kaizen", "Lean Six Sigma", "Agile", "Data Quality Frameworks"] }
+]
