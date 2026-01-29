@@ -249,6 +249,12 @@ function MarioWelcome({ onComplete, isDarkMode }: { onComplete: () => void; isDa
               lottieRef={lottieRef}
               onEnterFrame={handleLottieEnterFrame}
               onComplete={handleLottieComplete}
+              onDOMLoaded={() => {
+                // Speed up animation 1.8x without cutting content
+                if (lottieRef.current) {
+                  (lottieRef.current as { setSpeed?: (speed: number) => void }).setSpeed?.(1.8);
+                }
+              }}
             />
           </div>
         </div>
@@ -564,10 +570,10 @@ export default function LandingPage({ onSelectMode }: LandingPageProps) {
         {introDone && (
         <div className="flex flex-wrap justify-center gap-4 md:gap-8 mb-6 animate-fade-in-up animation-delay-400">
           {[
-            { value: 14, suffix: "+", label: "Years Experience" },
-            { value: 11, suffix: "", label: "Countries Impact" },
-            { value: 70, suffix: "%", label: "Faster Dev Cycles" },
-            { value: 53, suffix: "%", label: "User Engagement" },
+            { value: 20, suffix: "", label: "Countries" },
+            { value: 175, suffix: "", label: "Users Supported" },
+            { value: 21, suffix: "", label: "Dashboards" },
+            { value: 53, suffix: "%", label: "Daily Active" },
           ].map((metric, index) => (
             <div key={index} className="text-center">
               <div className={`text-3xl md:text-4xl font-bold tabular-nums ${

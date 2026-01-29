@@ -19,9 +19,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Smeet Kumar Patel | Data Analytics Manager & AI Solutions Architect",
-  description: "14+ years transforming data into strategic business outcomes. Data Analytics Manager & AI Solutions Architect at Sonova Group. Expert in Power BI, Python, Azure, and Gen AI adoption.",
-  keywords: ["Data Analytics", "AI Solutions Architect", "Power BI", "Python", "Machine Learning", "Azure", "Gen AI", "Berlin", "Data Transformation", "Business Intelligence"],
+  title: "Smeet Kumar Patel | Manager, Data Engineering, Analytics & GenAI",
+  description: "Leading enterprise analytics + GenAI delivery across 20 countries at Sonova Group. 175 users supported, 21 dashboards, 53% daily active usage. Expert in Power BI, Python, Azure, and GenAI.",
+  keywords: ["Data Engineering", "Analytics", "GenAI", "Power BI", "Python", "Machine Learning", "Azure", "Berlin", "Data Governance", "Business Intelligence"],
   authors: [{ name: "Smeet Kumar Patel" }],
   creator: "Smeet Kumar Patel",
   metadataBase: new URL("https://smeetkp.github.io"),
@@ -30,8 +30,8 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://smeetkp.github.io",
     siteName: "Smeet Kumar Patel Portfolio",
-    title: "Smeet Kumar Patel | Data Analytics Manager & AI Solutions Architect",
-    description: "14+ years transforming data into strategic business outcomes. Leading global BI transformation across 11 countries. Expert in Gen AI adoption with 70% faster development cycles.",
+    title: "Smeet Kumar Patel | Manager, Data Engineering, Analytics & GenAI",
+    description: "Leading enterprise analytics + GenAI delivery across 20 countries. 175 users supported, 21 dashboards, 53% daily active usage at Sonova Group.",
     images: [
       {
         url: "/og-image.png",
@@ -43,8 +43,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Smeet Kumar Patel | Data Analytics Manager & AI Solutions Architect",
-    description: "14+ years transforming data into strategic business outcomes. Expert in Power BI, Python, Azure, and Gen AI.",
+    title: "Smeet Kumar Patel | Manager, Data Engineering, Analytics & GenAI",
+    description: "Leading enterprise analytics + GenAI across 20 countries. 175 users, 21 dashboards, 53% daily active at Sonova Group.",
     images: ["/og-image.png"],
   },
   robots: {

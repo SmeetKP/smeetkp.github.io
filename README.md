@@ -66,3 +66,23 @@ A modern, interactive portfolio website built with **Next.js**, **React**, and *
 - `src/data/`: JSON files containing portfolio content.
 - `src/hooks/`: Custom hooks for audio and content loading.
 - `src/app/`: Next.js App Router pages.
+- `docs/`: Technical documentation.
+
+## 📚 Documentation
+
+| Document | Purpose |
+|----------|---------|
+| [README.md](README.md) | Project overview and quick start |
+| [CHANGELOG.md](CHANGELOG.md) | Version history and changes |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | **Deep technical documentation** - game engine, data flow, entity types, text system |
+
+### Resuming Development
+
+To resume work on this project:
+
+1. **Read `docs/ARCHITECTURE.md`** - Understand the game engine, level generator, and text display system
+2. **Check `CHANGELOG.md`** - See recent changes and known issues
+3. **Key files to understand:**
+   - `RetroEngine.ts` - Core game loop, physics, rendering
+   - `LevelGenerator.ts` - Converts JSON data to game entities
+   - `experience-detailed.json` - Authoritative content source

@@ -20,6 +20,12 @@ export class TextureManager {
     this.generateEnemyTexture();
     this.generateGoombaTexture();
     this.generateMushroomTexture();
+    this.generateBowserTexture();
+    this.generateHammerTexture();
+    this.generateFlagTexture();
+    this.generateTechPlatformTexture();
+    this.generateSectionBossTextures();
+    this.generateMetricCoinTexture();
   }
 
   private static createCanvas(width: number, height: number) {
@@ -478,5 +484,335 @@ export class TextureManager {
     ctx.stroke();
 
     this.textures.set('mushroom', canvas);
+  }
+
+  private static generateBowserTexture() {
+    const w = 80;
+    const h = 80;
+    const canvas = this.createCanvas(w, h);
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+
+    // Bowser - The Data Governance Boss (Pipeline Failures & Privacy Violations)
+    // Large menacing turtle-dragon creature
+
+    // Shell (dark green with spikes)
+    ctx.fillStyle = '#1B4D3E';
+    ctx.beginPath();
+    ctx.ellipse(w/2, 50, 35, 25, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Shell spikes (orange/red)
+    ctx.fillStyle = '#FF6B35';
+    for (let i = 0; i < 5; i++) {
+      const spikeX = 15 + i * 13;
+      ctx.beginPath();
+      ctx.moveTo(spikeX, 35);
+      ctx.lineTo(spikeX + 6, 20);
+      ctx.lineTo(spikeX + 12, 35);
+      ctx.fill();
+    }
+
+    // Body (yellow/tan belly)
+    ctx.fillStyle = '#F4D03F';
+    ctx.fillRect(20, 45, 40, 25);
+
+    // Head (green)
+    ctx.fillStyle = '#2E7D32';
+    ctx.beginPath();
+    ctx.ellipse(w/2, 25, 20, 18, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Snout (tan)
+    ctx.fillStyle = '#F4D03F';
+    ctx.beginPath();
+    ctx.ellipse(w/2 + 12, 28, 10, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Angry eyes (red with black pupils)
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(30, 18, 10, 8);
+    ctx.fillRect(45, 18, 10, 8);
+    
+    ctx.fillStyle = '#DC2626';
+    ctx.fillRect(33, 20, 5, 5);
+    ctx.fillRect(48, 20, 5, 5);
+
+    // Angry eyebrows
+    ctx.fillStyle = '#000000';
+    ctx.beginPath();
+    ctx.moveTo(28, 20);
+    ctx.lineTo(42, 16);
+    ctx.lineTo(42, 18);
+    ctx.lineTo(28, 22);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(52, 20);
+    ctx.lineTo(43, 16);
+    ctx.lineTo(43, 18);
+    ctx.lineTo(52, 22);
+    ctx.fill();
+
+    // Horns
+    ctx.fillStyle = '#F5DEB3';
+    ctx.beginPath();
+    ctx.moveTo(25, 15);
+    ctx.lineTo(20, 0);
+    ctx.lineTo(30, 12);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(55, 15);
+    ctx.lineTo(60, 0);
+    ctx.lineTo(50, 12);
+    ctx.fill();
+
+    // Feet (green claws)
+    ctx.fillStyle = '#1B5E20';
+    ctx.fillRect(10, 68, 20, 12);
+    ctx.fillRect(50, 68, 20, 12);
+
+    // Claws
+    ctx.fillStyle = '#F5DEB3';
+    ctx.fillRect(8, 75, 5, 5);
+    ctx.fillRect(15, 75, 5, 5);
+    ctx.fillRect(55, 75, 5, 5);
+    ctx.fillRect(62, 75, 5, 5);
+
+    this.textures.set('bowser', canvas);
+  }
+
+  private static generateHammerTexture() {
+    const w = 40;
+    const h = 40;
+    const canvas = this.createCanvas(w, h);
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+
+    // Governance Hammer - Tool to defeat pipeline failures
+    // Golden hammer with wooden handle
+
+    // Handle (wooden brown)
+    ctx.fillStyle = '#8B4513';
+    ctx.fillRect(18, 18, 6, 22);
+    
+    // Handle grip lines
+    ctx.fillStyle = '#5D3A1A';
+    ctx.fillRect(18, 22, 6, 2);
+    ctx.fillRect(18, 28, 6, 2);
+    ctx.fillRect(18, 34, 6, 2);
+
+    // Hammer head (golden/steel)
+    const gradient = ctx.createLinearGradient(5, 5, 35, 20);
+    gradient.addColorStop(0, '#FFD700');
+    gradient.addColorStop(0.5, '#FFA500');
+    gradient.addColorStop(1, '#B8860B');
+    
+    ctx.fillStyle = gradient;
+    ctx.fillRect(5, 5, 30, 16);
+
+    // Hammer head shine
+    ctx.fillStyle = '#FFEC8B';
+    ctx.fillRect(8, 7, 8, 4);
+
+    // Hammer head border
+    ctx.strokeStyle = '#8B6914';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(5, 5, 30, 16);
+
+    // Star emblem (governance symbol)
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 10px monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('⚡', 20, 13);
+
+    this.textures.set('hammer', canvas);
+  }
+
+  private static generateFlagTexture() {
+    const w = 24;
+    const h = 32;
+    const canvas = this.createCanvas(w, h);
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+
+    // Flag pole
+    ctx.fillStyle = '#8B4513';
+    ctx.fillRect(2, 0, 3, h);
+
+    // Flag (waving shape)
+    ctx.fillStyle = '#FFD700';
+    ctx.beginPath();
+    ctx.moveTo(5, 2);
+    ctx.lineTo(22, 6);
+    ctx.lineTo(20, 12);
+    ctx.lineTo(5, 14);
+    ctx.closePath();
+    ctx.fill();
+
+    // Flag border
+    ctx.strokeStyle = '#B8860B';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    this.textures.set('flag', canvas);
+  }
+
+  private static generateTechPlatformTexture() {
+    const w = 80;
+    const h = 30;
+    const canvas = this.createCanvas(w, h);
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+
+    // Platform base (tech/digital look)
+    const gradient = ctx.createLinearGradient(0, 0, 0, h);
+    gradient.addColorStop(0, '#4A90D9');
+    gradient.addColorStop(0.5, '#2E5A8B');
+    gradient.addColorStop(1, '#1A3A5C');
+    
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, w, h);
+
+    // Circuit pattern
+    ctx.strokeStyle = '#6BB3F0';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(5, 10);
+    ctx.lineTo(20, 10);
+    ctx.lineTo(25, 15);
+    ctx.lineTo(40, 15);
+    ctx.moveTo(45, 10);
+    ctx.lineTo(60, 10);
+    ctx.lineTo(65, 20);
+    ctx.lineTo(75, 20);
+    ctx.stroke();
+
+    // Glowing dots
+    ctx.fillStyle = '#00FF88';
+    ctx.beginPath();
+    ctx.arc(10, 10, 2, 0, Math.PI * 2);
+    ctx.arc(50, 15, 2, 0, Math.PI * 2);
+    ctx.arc(70, 10, 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Border
+    ctx.strokeStyle = '#6BB3F0';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(0, 0, w, h);
+
+    this.textures.set('techPlatform', canvas);
+  }
+
+  private static generateSectionBossTextures() {
+    // Generate different boss textures for each section type
+    const bossTypes = [
+      { id: 'boss_kpi', color: '#DC2626', icon: '📊' },      // KPI Chaos
+      { id: 'boss_pipeline', color: '#7C3AED', icon: '🔧' }, // Pipeline Monster
+      { id: 'boss_hallucination', color: '#059669', icon: '🤖' }, // Hallucination Hydra
+      { id: 'boss_entropy', color: '#D97706', icon: '👥' },  // Team Entropy
+      { id: 'boss_optimization', color: '#0891B2', icon: '📈' } // Optimization Overlord
+    ];
+
+    bossTypes.forEach(boss => {
+      const w = 60;
+      const h = 60;
+      const canvas = this.createCanvas(w, h);
+      const ctx = canvas.getContext('2d') as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+
+      // Body (menacing blob shape)
+      ctx.fillStyle = boss.color;
+      ctx.beginPath();
+      ctx.ellipse(w/2, h/2 + 5, 25, 22, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Darker shade for depth
+      ctx.fillStyle = this.darkenColor(boss.color, 30);
+      ctx.beginPath();
+      ctx.ellipse(w/2, h/2 + 10, 20, 15, 0, 0, Math.PI);
+      ctx.fill();
+
+      // Angry eyes
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(w/2 - 15, h/2 - 8, 10, 8);
+      ctx.fillRect(w/2 + 5, h/2 - 8, 10, 8);
+      
+      // Pupils
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(w/2 - 12, h/2 - 5, 5, 5);
+      ctx.fillRect(w/2 + 8, h/2 - 5, 5, 5);
+
+      // Angry eyebrows
+      ctx.fillStyle = '#000000';
+      ctx.beginPath();
+      ctx.moveTo(w/2 - 18, h/2 - 5);
+      ctx.lineTo(w/2 - 5, h/2 - 12);
+      ctx.lineTo(w/2 - 5, h/2 - 10);
+      ctx.lineTo(w/2 - 18, h/2 - 3);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(w/2 + 18, h/2 - 5);
+      ctx.lineTo(w/2 + 5, h/2 - 12);
+      ctx.lineTo(w/2 + 5, h/2 - 10);
+      ctx.lineTo(w/2 + 18, h/2 - 3);
+      ctx.fill();
+
+      // Spikes on top
+      ctx.fillStyle = this.darkenColor(boss.color, 20);
+      for (let i = 0; i < 3; i++) {
+        const spikeX = w/2 - 15 + i * 15;
+        ctx.beginPath();
+        ctx.moveTo(spikeX, h/2 - 15);
+        ctx.lineTo(spikeX + 5, h/2 - 28);
+        ctx.lineTo(spikeX + 10, h/2 - 15);
+        ctx.fill();
+      }
+
+      this.textures.set(boss.id, canvas);
+    });
+  }
+
+  private static generateMetricCoinTexture() {
+    const size = 36;
+    const canvas = this.createCanvas(size, size);
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+
+    // Outer ring (gold)
+    ctx.fillStyle = '#FFD700';
+    ctx.beginPath();
+    ctx.arc(size/2, size/2, size/2 - 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Inner circle (darker gold)
+    ctx.fillStyle = '#B8860B';
+    ctx.beginPath();
+    ctx.arc(size/2, size/2, size/2 - 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Center highlight
+    ctx.fillStyle = '#FFE55C';
+    ctx.beginPath();
+    ctx.arc(size/2, size/2, size/2 - 10, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Shine effect
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+    ctx.beginPath();
+    ctx.ellipse(size/2 - 4, size/2 - 4, 6, 4, -0.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Border
+    ctx.strokeStyle = '#8B6914';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(size/2, size/2, size/2 - 2, 0, Math.PI * 2);
+    ctx.stroke();
+
+    this.textures.set('metricCoin', canvas);
+  }
+
+  private static darkenColor(hex: string, percent: number): string {
+    const num = parseInt(hex.replace('#', ''), 16);
+    const amt = Math.round(2.55 * percent);
+    const R = Math.max((num >> 16) - amt, 0);
+    const G = Math.max((num >> 8 & 0x00FF) - amt, 0);
+    const B = Math.max((num & 0x0000FF) - amt, 0);
+    return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
   }
 }

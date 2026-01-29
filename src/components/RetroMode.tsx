@@ -98,6 +98,10 @@ export default function RetroMode({ onSwitchMode, onBack }: RetroModeProps) {
       const levelData = LevelGenerator.generate(content);
       engineRef.current.loadLevel(levelData.entities);
       
+      // Set dynamic totals from level data
+      engineRef.current.gameState.totalAchievements = levelData.totalAchievements;
+      engineRef.current.gameState.totalFlags = levelData.totalFlags;
+      
       // Check for deep link
       if (typeof window !== 'undefined') {
         const hash = window.location.hash.slice(1);

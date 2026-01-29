@@ -2,6 +2,30 @@
 
 All notable changes to the Portfolio 2026 project will be documented in this file.
 
+## [1.2.0] - 2026-01-29
+
+### Fixed
+- **Billboard Text Overflow**: Rewrote billboard rendering with `measureText()` for accurate text width calculation
+- **Adaptive Billboard Sizing**: Billboards now auto-size based on actual content (no blank space, no overflow)
+- **Floating Text Overlap**: Implemented vertical stacking system - new texts appear 25px higher to prevent overlap
+- **Illogical Text Messages**: All goomba defeat messages now show full, meaningful achievements
+  - Before: "KPIs Fixed!" → After: "Standardized KPIs across 20 markets!"
+  - Before: "75% Automated!" → After: "Automated pipelines, saved 75% FTE!"
+- **Coin Popup Truncation**: Removed all text truncation - full messages now display
+- **Contextless Values**: Coin labels now show value + context (e.g., "75%" + "FTE Reduction")
+
+### Added
+- **Fade Out Effect**: All floating text and particles now fade out smoothly over last 1 second
+- **Goomba Labels**: Challenge labels now appear above goombas (red text)
+- **Coin Context Labels**: Two-line labels below coins (value + short description)
+- **Architecture Documentation**: Created `docs/ARCHITECTURE.md` with full technical documentation
+
+### Changed
+- **Billboard Content**: Shortened to concise, meaningful lines that fit without overflow
+- **Floating Text Duration**: Increased to 3 seconds with slower upward movement
+- **HUD Message Bar**: Always shows full text for 5 seconds (recruiter-friendly)
+- **Defeat Messages**: All 16 goomba challenges now have complete, meaningful messages
+
 ## [1.1.0] - 2026-01-28
 
 ### Fixed

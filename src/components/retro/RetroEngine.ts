@@ -11,6 +11,7 @@ export class RetroEngine {
   public player: Entity;
   public gameState: GameState;
   private entities: Entity[] = [];
+  private originalEntities: Entity[] = [];
   private particles: Entity[] = []; 
   private animTimer: number = 0;
   private victoryButtons: { x: number; y: number; w: number; h: number; action: string }[] = [];
@@ -35,12 +36,20 @@ export class RetroEngine {
       score: 0,
       coins: 0,
       achievements: 0,
-      totalAchievements: 4,
+      totalAchievements: 30,
       sectionsVisited: [],
       camera: { x: 0 },
       message: null,
       messageTimer: 0,
-      introTimer: 0
+      introTimer: 0,
+      hasHammer: false,
+      bowserDefeated: false,
+      flagsCollected: 0,
+      totalFlags: 6,
+      skillsUnlocked: [],
+      metricsCollected: [],
+      challengesOvercome: [],
+      hammerSwingTimer: 0
     };
 
     // Default Player (Will be repositioned by level loader)
@@ -63,6 +72,8 @@ export class RetroEngine {
   // ... (rest of input/physics code remains similar, focusing on render update)
 
   public loadLevel(entities: Entity[]) {
+    // Store deep copy of original entities for restart
+    this.originalEntities = JSON.parse(JSON.stringify(entities));
     this.entities = entities;
     this.entities.push(this.player);
     
@@ -76,6 +87,36 @@ export class RetroEngine {
     this.gameState.introTimer = 0;
     this.gameState.achievements = 0;
     this.gameState.sectionsVisited = [];
+    this.gameState.hasHammer = false;
+    this.gameState.bowserDefeated = false;
+  }
+
+  public restartLevel() {
+    // Reload entities from stored original state
+    this.entities = JSON.parse(JSON.stringify(this.originalEntities));
+    this.entities.push(this.player);
+    this.particles = [];
+    
+    // Reset all state
+    this.player.vx = 0;
+    this.player.vy = 0;
+    this.player.x = 100;
+    this.player.y = 0;
+    this.gameState.camera.x = 0;
+    this.gameState.phase = 'intro';
+    this.gameState.introTimer = 0;
+    this.gameState.score = 0;
+    this.gameState.coins = 0;
+    this.gameState.achievements = 0;
+    this.gameState.sectionsVisited = [];
+    this.gameState.hasHammer = false;
+    this.gameState.bowserDefeated = false;
+    this.gameState.message = null;
+    this.gameState.messageTimer = 0;
+    this.gameState.flagsCollected = 0;
+    this.gameState.skillsUnlocked = [];
+    this.gameState.metricsCollected = [];
+    this.gameState.challengesOvercome = [];
   }
 
   public resize(w: number, h: number) {
@@ -194,7 +235,7 @@ export class RetroEngine {
         p.y += p.vy * dt;
     }
 
-    // Coin Collection
+    // Coin Collection (Metric Coins with real achievement data)
     this.entities.forEach(e => {
       if (e.type === 'coin' && e.active) {
         if (this.rectIntersect(this.player, e)) {
@@ -203,77 +244,180 @@ export class RetroEngine {
           this.gameState.coins++;
           this.gameState.score += 100;
           this.soundCallback('coin');
-          this.spawnFloatingText(e.x, e.y, e.content || '+100');
+          
+          // Track metric collection
+          if (e.metricLabel) {
+            this.gameState.metricsCollected.push(e.metricLabel);
+          }
+          
+          // Show FULL content - use the pre-built meaningful message
+          const displayText = e.content || `${e.metricValue || ''} ${e.metricLabel || 'Collected!'}`;
+          this.spawnFloatingText(e.x, e.y - 10, displayText);
           this.spawnParticles(e.x + e.w/2, e.y + e.h/2, '#FFD700');
         }
       }
     });
 
-    // Goomba Movement & Collision
+    // Flag Collection (Jurisdiction Compliance)
     this.entities.forEach(e => {
-      if (e.type === 'goomba' && e.active) {
-        // Move goomba
-        e.x += e.vx * dt;
-        
-        // Bounce at boundaries
-        if (e.x < 50 || e.x > 3400) {
-          e.vx *= -1;
-        }
-
-        // Check player collision
+      if (e.type === 'flag' && e.active) {
         if (this.rectIntersect(this.player, e)) {
-          // Player stomps goomba if falling
-          if (this.player.vy > 0 && this.player.y + this.player.h < e.y + e.h/2) {
-            e.active = false;
-            this.player.vy = -400; // Bounce
-            this.gameState.score += 100;
-            this.soundCallback('bump');
-            // Show meaningful message based on challenge label
-            const challengeMessages: Record<string, string> = {
-              'LEGACY': 'Legacy Systems Conquered!',
-              'SILOS': 'Data Silos Broken!',
-              'SLOW': 'Processes Optimized!'
-            };
-            const msg = e.label ? (challengeMessages[e.label] || `${e.label} Defeated!`) : 'Challenge Overcome!';
-            this.spawnFloatingText(e.x, e.y - 20, msg);
-            this.spawnParticles(e.x + e.w/2, e.y + e.h/2, '#8B4513');
+          e.active = false;
+          this.gameState.flagsCollected++;
+          this.gameState.score += 25;
+          this.soundCallback('coin');
+          
+          // Show country compliance info
+          this.spawnFloatingText(e.x, e.y - 10, e.content || e.label || 'Flag!');
+          this.spawnParticles(e.x + e.w/2, e.y + e.h/2, '#10B981');
+          
+          // Check if all flags collected
+          if (this.gameState.flagsCollected === this.gameState.totalFlags) {
+            this.showMessage('🌍 COMPLIANCE COMPLETE! All jurisdictions covered!');
+            this.gameState.achievements++;
+            this.gameState.score += 200;
           }
         }
       }
     });
 
-    // Mushroom Collection (Strengths)
+    // Goomba Movement & Collision (Section-specific challenges)
+    this.entities.forEach(e => {
+      if (e.type === 'goomba' && e.active) {
+        // Move goomba
+        e.x += e.vx * dt;
+        
+        // Bounce at boundaries (dynamic based on level length)
+        if (e.x < 50 || e.x > 8000) {
+          e.vx *= -1;
+        }
+
+        // Check player collision
+        if (this.rectIntersect(this.player, e)) {
+          // Player stomps goomba if falling from above
+          if (this.player.vy > 0 && this.player.y + this.player.h < e.y + e.h/2) {
+            e.active = false;
+            this.player.vy = -400; // Bounce
+            this.gameState.score += 100;
+            this.soundCallback('bump');
+            
+            // Track challenge overcome
+            if (e.label) {
+              this.gameState.challengesOvercome.push(e.label);
+            }
+            
+            // Use custom defeat message if available, otherwise generate from label
+            const msg = e.defeatMessage || (e.label ? `${e.label} Defeated!` : 'Challenge Overcome!');
+            this.spawnFloatingText(e.x, e.y - 20, msg);
+            this.spawnParticles(e.x + e.w/2, e.y + e.h/2, '#8B4513');
+          } else {
+            // Side collision - player gets shocked/bounced back
+            this.soundCallback('die');
+            
+            // Determine bounce direction based on relative position
+            const bounceDirection = this.player.x < e.x ? -1 : 1;
+            
+            // Apply knockback: horizontal bounce + small vertical pop
+            this.player.vx = bounceDirection * 350;
+            this.player.vy = -300;
+            
+            // Visual feedback (no score penalty)
+            this.spawnFloatingText(this.player.x, this.player.y - 20, 'OUCH!');
+            this.spawnParticles(this.player.x + this.player.w/2, this.player.y + this.player.h/2, '#EF4444');
+          }
+        }
+      }
+    });
+
+    // Mushroom Collection (Skills/Strengths)
     this.entities.forEach(e => {
       if (e.type === 'mushroom' && e.active) {
         if (this.rectIntersect(this.player, e)) {
           e.active = false;
           this.gameState.score += 50;
           this.soundCallback('powerup');
-          // Show meaningful strength message
-          const strengthMessages: Record<string, string> = {
-            'AI': 'AI/ML Expertise Acquired!',
-            'LEAD': 'Leadership Skills Unlocked!'
-          };
-          const msg = e.label ? (strengthMessages[e.label] || `${e.label} Power!`) : 'Strength Gained!';
+          
+          // Track skill unlocked
+          if (e.label) {
+            this.gameState.skillsUnlocked.push(e.label);
+          }
+          
+          // Show skill message
+          const msg = e.content || (e.label ? `${e.label} Skill Unlocked!` : 'Strength Gained!');
           this.spawnFloatingText(e.x, e.y - 20, msg);
           this.spawnParticles(e.x + e.w/2, e.y + e.h/2, '#DC2626');
         }
       }
     });
 
-    // Section Progress Tracking
-    const sectionThresholds: Record<string, number> = {
-      'about': 200,
-      'experience': 700,
-      'skills': 1900,
-      'contact': 2450
-    };
-    
-    Object.entries(sectionThresholds).forEach(([section, threshold]) => {
-      if (this.player.x >= threshold && !this.gameState.sectionsVisited.includes(section)) {
-        this.gameState.sectionsVisited.push(section);
+    // Hammer Collection (Governance Tool) - attaches to player
+    this.entities.forEach(e => {
+      if (e.type === 'hammer' && e.active) {
+        if (this.rectIntersect(this.player, e)) {
+          e.active = false;
+          this.gameState.hasHammer = true;
+          this.gameState.score += 200;
+          this.soundCallback('powerup');
+          this.showMessage('⚡ GOVERNANCE HAMMER ACQUIRED! Walk into Data Chaos to defeat it!');
+          this.spawnParticles(e.x + e.w/2, e.y + e.h/2, '#FFD700');
+        }
       }
     });
+
+    // Update hammer swing timer
+    if (this.gameState.hammerSwingTimer > 0) {
+      this.gameState.hammerSwingTimer -= dt * 1000;
+    }
+
+    // Bowser Boss Collision (Data Chaos - shakes when hit with hammer)
+    this.entities.forEach(e => {
+      if (e.type === 'bowser' && e.active) {
+        // Update shake timer
+        if (e.shakeTimer && e.shakeTimer > 0) {
+          e.shakeTimer -= dt * 1000;
+          if (e.shakeTimer <= 0) {
+            // Shake complete - defeat boss
+            e.active = false;
+            this.gameState.bowserDefeated = true;
+            this.gameState.score += 500;
+            this.gameState.achievements++;
+            this.soundCallback('powerup');
+            const defeatMsg = e.defeatMessage || '🛡️ DATA CHAOS DEFEATED! Data Governance Master!';
+            this.showMessage(defeatMsg);
+            for (let i = 0; i < 20; i++) {
+              this.spawnParticles(e.x + e.w/2, e.y + e.h/2, ['#FFD700', '#10B981', '#3B82F6', '#EF4444'][i % 4]);
+            }
+          }
+        }
+
+        if (this.rectIntersect(this.player, e) && !e.shakeTimer) {
+          if (this.gameState.hasHammer) {
+            // Start shake animation - boss shakes for 1 second before defeat
+            e.shakeTimer = 1000;
+            this.gameState.hammerSwingTimer = 500;
+            this.soundCallback('bump');
+            this.showMessage('💥 STRIKING DATA CHAOS WITH GOVERNANCE HAMMER!');
+          } else {
+            // No hammer - bounce back!
+            this.soundCallback('die');
+            const bounceDirection = this.player.x < e.x ? -1 : 1;
+            this.player.vx = bounceDirection * 400;
+            this.player.vy = -350;
+            this.showMessage('❌ You need the Governance Hammer to defeat Data Chaos!');
+            this.spawnParticles(this.player.x + this.player.w/2, this.player.y + this.player.h/2, '#EF4444');
+          }
+        }
+      }
+    });
+
+    // Section Progress Tracking (dynamic based on bookmarks - simplified)
+    const playerX = this.player.x;
+    if (playerX >= 100 && !this.gameState.sectionsVisited.includes('about')) {
+      this.gameState.sectionsVisited.push('about');
+    }
+    if (playerX >= 500 && !this.gameState.sectionsVisited.includes('experience')) {
+      this.gameState.sectionsVisited.push('experience');
+    }
 
     // Camera Follow
     const targetCamX = this.player.x - this.canvas.width * 0.3;
@@ -384,21 +528,10 @@ export class RetroEngine {
   }
 
   private spawnFloatingText(x: number, y: number, text: string) {
-      // Safety: If text is too long, divert to HUD to prevent overlap
-      if (text.length > 15) {
-          this.showMessage(text);
-          return;
-      }
-
-      this.particles.push({
-          id: `t_${Date.now()}`,
-          type: 'text',
-          x: x, y: y - 20, w: 0, h: 0,
-          vx: 0, vy: -50,
-          color: '#FFF',
-          label: text,
-          active: true, solid: false, gravity: false, life: 2.0
-      });
+      // Show text ONLY in HUD message bar - no floating text
+      // This is the standard approach in retro games (Super Mario style)
+      // The HUD message bar is fixed, readable, and never overlaps
+      this.showMessage(text);
   }
 
   private rectIntersect(r1: Rect, r2: Rect): boolean {
@@ -415,72 +548,87 @@ export class RetroEngine {
   }
 
   private renderBillboard(e: Entity, renderX: number, renderY: number) {
-    const padding = 10;
-    const titleFontSize = 10;
-    const contentFontSize = 7;
+    const padding = 12;
+    const titleFont = 'bold 10px "Press Start 2P", monospace';
+    const contentFont = '8px "Press Start 2P", monospace';
     const lineHeight = 12;
+    const titleHeight = 16;
     
-    // Calculate max chars based on width (Press Start 2P: ~0.6 * fontSize per char)
-    const maxCharsContent = Math.floor((e.w - padding * 2) / (contentFontSize * 0.7));
-
-    // Billboard background with gradient effect
-    this.ctx.fillStyle = '#1a1a2e';
-    this.ctx.fillRect(renderX, renderY, e.w, e.h);
+    // Calculate actual required dimensions based on text content
+    this.ctx.font = titleFont;
+    const titleWidth = e.label ? this.ctx.measureText(e.label).width : 0;
     
-    // Inner darker area
-    this.ctx.fillStyle = '#0f0f1a';
-    this.ctx.fillRect(renderX + 3, renderY + 3, e.w - 6, e.h - 6);
+    this.ctx.font = contentFont;
+    const contentLines = e.content ? e.content.split('\n') : [];
+    let maxContentWidth = 0;
+    for (const line of contentLines) {
+      const lineWidth = this.ctx.measureText(line).width;
+      if (lineWidth > maxContentWidth) maxContentWidth = lineWidth;
+    }
     
-    // Border
-    this.ctx.strokeStyle = '#F8931D';
+    // Calculate adaptive billboard size
+    const requiredWidth = Math.max(titleWidth, maxContentWidth) + padding * 2;
+    const requiredHeight = padding + (e.label ? titleHeight : 0) + (contentLines.length * lineHeight) + padding;
+    
+    // Use calculated size (adaptive) - minimum 150px wide
+    const billboardW = Math.max(150, Math.min(requiredWidth, 400));
+    const billboardH = Math.max(60, requiredHeight);
+    
+    // Professional dark background - sized to content
+    this.ctx.fillStyle = '#0f172a';
+    this.ctx.fillRect(renderX, renderY, billboardW, billboardH);
+    
+    // Inner area
+    this.ctx.fillStyle = '#1e293b';
+    this.ctx.fillRect(renderX + 3, renderY + 3, billboardW - 6, billboardH - 6);
+    
+    // Blue accent border
+    this.ctx.strokeStyle = '#3b82f6';
     this.ctx.lineWidth = 2;
-    this.ctx.strokeRect(renderX, renderY, e.w, e.h);
+    this.ctx.strokeRect(renderX + 1, renderY + 1, billboardW - 2, billboardH - 2);
 
-    // Title (label)
+    // Clip to prevent overflow
+    this.ctx.save();
+    this.ctx.beginPath();
+    this.ctx.rect(renderX + padding, renderY + padding, billboardW - padding * 2, billboardH - padding * 2);
+    this.ctx.clip();
+
+    let currentY = renderY + padding;
+
+    // Title
     if (e.label) {
-      this.ctx.fillStyle = '#F8931D';
-      this.ctx.font = `bold ${titleFontSize}px "Press Start 2P", monospace`;
-      this.ctx.textAlign = 'center';
+      this.ctx.fillStyle = '#60a5fa';
+      this.ctx.font = titleFont;
+      this.ctx.textAlign = 'left';
       this.ctx.textBaseline = 'top';
-      // Truncate title to fit
-      const maxTitleChars = Math.floor((e.w - padding * 2) / (titleFontSize * 0.7));
-      const title = e.label.length > maxTitleChars ? e.label.slice(0, maxTitleChars - 2) + '..' : e.label;
-      this.ctx.fillText(title, renderX + e.w / 2, renderY + padding);
+      this.ctx.fillText(e.label, renderX + padding, currentY);
+      currentY += titleHeight;
     }
 
-    // Content lines - properly wrapped
+    // Content lines
     if (e.content) {
-      this.ctx.fillStyle = '#ffffff';
-      this.ctx.font = `${contentFontSize}px "Press Start 2P", monospace`;
+      this.ctx.fillStyle = '#e2e8f0';
+      this.ctx.font = contentFont;
       this.ctx.textAlign = 'left';
+      this.ctx.textBaseline = 'top';
       
-      const lines = e.content.split('\n');
-      let lineIndex = 0;
-      
-      for (const line of lines) {
-        // Truncate each line to fit
-        const truncatedLine = line.length > maxCharsContent 
-          ? line.slice(0, maxCharsContent - 2) + '..' 
-          : line;
-        
-        const lineY = renderY + padding + 20 + (lineIndex * lineHeight);
-        if (lineY < renderY + e.h - padding) {
-          this.ctx.fillText(truncatedLine, renderX + padding, lineY);
-          lineIndex++;
-        }
+      for (const line of contentLines) {
+        this.ctx.fillText(line, renderX + padding, currentY);
+        currentY += lineHeight;
       }
     }
 
-    // Wooden pole connecting to ground
-    const poleX = renderX + e.w / 2 - 4;
-    const poleY = renderY + e.h;
-    const poleHeight = 500 - (renderY + e.h);
+    this.ctx.restore();
+
+    // Wooden pole - centered under billboard
+    const poleX = renderX + billboardW / 2 - 4;
+    const poleY = renderY + billboardH;
+    const poleHeight = 500 - (renderY + billboardH);
     
-    // Pole with wood grain effect
-    this.ctx.fillStyle = '#8B4513';
+    this.ctx.fillStyle = '#78350f';
     this.ctx.fillRect(poleX, poleY, 8, Math.max(0, poleHeight));
-    this.ctx.fillStyle = '#A0522D';
-    this.ctx.fillRect(poleX + 2, poleY, 2, Math.max(0, poleHeight));
+    this.ctx.fillStyle = '#92400e';
+    this.ctx.fillRect(poleX + 2, poleY, 3, Math.max(0, poleHeight));
   }
 
   public render() {
@@ -525,8 +673,18 @@ export class RetroEngine {
         if (texture) {
           this.ctx.drawImage(texture, renderX, renderY + bobOffset, e.w, e.h);
         }
-        // Draw label below coin
-        if (e.label) {
+        // Draw FULL label below coin with context (value + short label)
+        if (e.metricValue && e.metricLabel) {
+          this.ctx.fillStyle = '#FFD700';
+          this.ctx.font = 'bold 8px "Press Start 2P", monospace';
+          this.ctx.textAlign = 'center';
+          // Show value on first line
+          this.ctx.fillText(e.metricValue, renderX + e.w/2, renderY + e.h + 12 + bobOffset);
+          // Show short context on second line
+          const shortLabel = e.metricLabel.split(' ').slice(0, 2).join(' ');
+          this.ctx.font = '6px "Press Start 2P", monospace';
+          this.ctx.fillText(shortLabel, renderX + e.w/2, renderY + e.h + 22 + bobOffset);
+        } else if (e.label) {
           this.ctx.fillStyle = '#FFD700';
           this.ctx.font = 'bold 10px "Press Start 2P", monospace';
           this.ctx.textAlign = 'center';
@@ -535,11 +693,18 @@ export class RetroEngine {
         continue;
       }
 
-      // Goomba Rendering
+      // Goomba Rendering with challenge label
       if (e.type === 'goomba') {
         const texture = TextureManager.get('goomba');
         if (texture) {
           this.ctx.drawImage(texture, renderX, renderY, e.w, e.h);
+        }
+        // Show challenge label above goomba
+        if (e.label) {
+          this.ctx.fillStyle = '#DC2626';
+          this.ctx.font = 'bold 8px "Press Start 2P", monospace';
+          this.ctx.textAlign = 'center';
+          this.ctx.fillText(e.label, renderX + e.w/2, renderY - 8);
         }
         continue;
       }
@@ -550,6 +715,81 @@ export class RetroEngine {
         const texture = TextureManager.get('mushroom');
         if (texture) {
           this.ctx.drawImage(texture, renderX, renderY + bobOffset, e.w, e.h);
+        }
+        continue;
+      }
+
+      // Hammer Rendering (with rotation/bob animation)
+      if (e.type === 'hammer') {
+        const bobOffset = Math.sin(this.animTimer / 200) * 4;
+        const texture = TextureManager.get('hammer');
+        if (texture) {
+          this.ctx.drawImage(texture, renderX, renderY + bobOffset, e.w, e.h);
+        }
+        // Label below hammer
+        this.ctx.fillStyle = '#FFD700';
+        this.ctx.font = 'bold 8px "Press Start 2P", monospace';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('GOVERNANCE', renderX + e.w/2, renderY + e.h + 12 + bobOffset);
+        this.ctx.fillText('HAMMER', renderX + e.w/2, renderY + e.h + 22 + bobOffset);
+        continue;
+      }
+
+      // Bowser Boss Rendering - Data Chaos (shakes when being defeated)
+      if (e.type === 'bowser') {
+        // Apply shake effect if shakeTimer is active
+        let shakeX = 0;
+        let shakeY = 0;
+        if (e.shakeTimer && e.shakeTimer > 0) {
+          shakeX = Math.sin(this.animTimer / 20) * 8;
+          shakeY = Math.cos(this.animTimer / 15) * 4;
+        }
+        
+        const texture = TextureManager.get('bowser');
+        if (texture) {
+          this.ctx.drawImage(texture, renderX + shakeX, renderY + shakeY, e.w, e.h);
+        }
+        // Boss name and description
+        this.ctx.fillStyle = e.shakeTimer ? '#FF0000' : '#DC2626';
+        this.ctx.font = 'bold 10px "Press Start 2P", monospace';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(e.label || 'DATA CHAOS', renderX + e.w/2 + shakeX, renderY - 30 + shakeY);
+        // What the boss represents
+        this.ctx.fillStyle = '#FEF08A';
+        this.ctx.font = '6px "Press Start 2P", monospace';
+        this.ctx.fillText('Pipeline Failures', renderX + e.w/2 + shakeX, renderY - 18 + shakeY);
+        this.ctx.fillText('Compliance Risks', renderX + e.w/2 + shakeX, renderY - 10 + shakeY);
+        continue;
+      }
+
+      // Flag Rendering (Jurisdiction compliance flags)
+      if (e.type === 'flag') {
+        const bobOffset = Math.sin(this.animTimer / 150 + e.x * 0.01) * 3;
+        const texture = TextureManager.get('flag');
+        if (texture) {
+          this.ctx.drawImage(texture, renderX, renderY + bobOffset, e.w, e.h);
+        }
+        // Draw country emoji above flag
+        if (e.label) {
+          this.ctx.font = '14px sans-serif';
+          this.ctx.textAlign = 'center';
+          this.ctx.fillText(e.label, renderX + e.w/2, renderY - 5 + bobOffset);
+        }
+        continue;
+      }
+
+      // Tech Platform Rendering
+      if (e.type === 'techPlatform') {
+        const texture = TextureManager.get('techPlatform');
+        if (texture) {
+          this.ctx.drawImage(texture, renderX, renderY, e.w, e.h);
+        }
+        // Draw tech name on platform
+        if (e.label) {
+          this.ctx.fillStyle = '#FFFFFF';
+          this.ctx.font = 'bold 8px "Press Start 2P", monospace';
+          this.ctx.textAlign = 'center';
+          this.ctx.fillText(e.label, renderX + e.w/2, renderY + e.h/2 + 3);
         }
         continue;
       }
@@ -565,6 +805,39 @@ export class RetroEngine {
             this.ctx.drawImage(heroTexture, 0, 0, e.w, e.h);
           } else {
             this.ctx.drawImage(heroTexture, renderX, renderY, e.w, e.h);
+          }
+          this.ctx.restore();
+        }
+        
+        // Draw hammer if player has it
+        if (this.gameState.hasHammer) {
+          const hammerTexture = TextureManager.get('hammer');
+          const isSwinging = this.gameState.hammerSwingTimer > 0;
+          const swingProgress = isSwinging ? (500 - this.gameState.hammerSwingTimer) / 500 : 0;
+          
+          this.ctx.save();
+          const hammerX = e.facingRight ? renderX + e.w - 5 : renderX - 20;
+          const hammerY = renderY + 5;
+          
+          // Swing animation - rotate hammer
+          if (isSwinging) {
+            const pivotX = hammerX + 12;
+            const pivotY = hammerY + 20;
+            this.ctx.translate(pivotX, pivotY);
+            // Swing arc: 0 -> -90 degrees -> back
+            const swingAngle = Math.sin(swingProgress * Math.PI) * -1.5;
+            this.ctx.rotate(swingAngle);
+            this.ctx.translate(-pivotX, -pivotY);
+          }
+          
+          if (hammerTexture) {
+            this.ctx.drawImage(hammerTexture, hammerX, hammerY, 24, 24);
+          } else {
+            // Fallback hammer drawing
+            this.ctx.fillStyle = '#8B4513';
+            this.ctx.fillRect(hammerX + 8, hammerY + 10, 6, 18);
+            this.ctx.fillStyle = '#FFD700';
+            this.ctx.fillRect(hammerX, hammerY, 24, 12);
           }
           this.ctx.restore();
         }
@@ -620,16 +893,26 @@ export class RetroEngine {
         const renderX = Math.floor(p.x - camX);
         const renderY = Math.floor(p.y);
 
+        // Calculate fade alpha based on remaining life (fade out in last 1 second)
+        let alpha = 1.0;
+        if (p.life !== undefined && p.life < 1.0) {
+            alpha = Math.max(0, p.life);
+        }
+
         if (p.type === 'text' && p.label) {
+            this.ctx.globalAlpha = alpha;
             this.ctx.fillStyle = "#FFFFFF";
-            this.ctx.font = '16px "Press Start 2P", monospace'; // Retro font
+            this.ctx.font = '16px "Press Start 2P", monospace';
             this.ctx.strokeStyle = "#000000";
             this.ctx.lineWidth = 3;
             this.ctx.strokeText(p.label, renderX, renderY);
             this.ctx.fillText(p.label, renderX, renderY);
+            this.ctx.globalAlpha = 1.0;
         } else {
+            this.ctx.globalAlpha = alpha;
             this.ctx.fillStyle = p.color;
             this.ctx.fillRect(renderX, renderY, p.w, p.h);
+            this.ctx.globalAlpha = 1.0;
         }
     }
 
@@ -797,17 +1080,17 @@ export class RetroEngine {
       this.ctx.drawImage(heroTexture, centerX - heroSize / 2, centerY - 80, heroSize, heroSize);
     }
 
-    // Tagline
+    // Tagline - matches experience-detailed.json
     this.ctx.fillStyle = '#ffffff';
-    this.ctx.font = '12px "Press Start 2P", monospace';
-    this.ctx.fillText('Data Analytics Manager & AI Architect', centerX, centerY + 20);
+    this.ctx.font = '11px "Press Start 2P", monospace';
+    this.ctx.fillText('Manager, Data Engineering, Analytics & GenAI', centerX, centerY + 20);
     this.ctx.fillText('Berlin, Germany', centerX, centerY + 45);
 
-    // Metrics bar
+    // Metrics bar - accurate data from experience-detailed.json
     const metrics = [
-      { value: '14+', label: 'YEARS' },
-      { value: '11', label: 'COUNTRIES' },
-      { value: '70%', label: 'FASTER' }
+      { value: '20', label: 'COUNTRIES' },
+      { value: '175', label: 'USERS' },
+      { value: '21', label: 'DASHBOARDS' }
     ];
     const metricBoxW = 120;
     const metricStartX = centerX - (metrics.length * metricBoxW) / 2;
@@ -858,38 +1141,108 @@ export class RetroEngine {
 
   private renderVictoryScreen() {
     // Semi-transparent overlay
-    this.ctx.fillStyle = 'rgba(0,0,0,0.85)';
+    this.ctx.fillStyle = 'rgba(0,0,0,0.9)';
     this.ctx.fillRect(0, 0, this.width, this.height);
 
     const centerX = this.width / 2;
-    const centerY = this.height / 2;
+    const startY = 40;
 
     // Title
     this.ctx.fillStyle = '#F8931D';
-    this.ctx.font = 'bold 28px "Press Start 2P", monospace';
+    this.ctx.font = 'bold 24px "Press Start 2P", monospace';
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
-    this.ctx.fillText('★ QUEST COMPLETE! ★', centerX, centerY - 120);
+    this.ctx.fillText('🏆 SONOVA WORLD COMPLETE! 🏆', centerX, startY);
 
-    // Trophy (simple pixel art)
+    // Summary Card Background
+    const cardX = centerX - 280;
+    const cardY = startY + 30;
+    const cardW = 560;
+    const cardH = 320;
+    
+    this.ctx.fillStyle = 'rgba(26, 26, 46, 0.95)';
+    this.ctx.fillRect(cardX, cardY, cardW, cardH);
+    this.ctx.strokeStyle = '#F8931D';
+    this.ctx.lineWidth = 3;
+    this.ctx.strokeRect(cardX, cardY, cardW, cardH);
+
+    let lineY = cardY + 30;
+
+    // Score & Achievements Row
     this.ctx.fillStyle = '#FFD700';
-    this.ctx.fillRect(centerX - 20, centerY - 80, 40, 30);
-    this.ctx.fillRect(centerX - 30, centerY - 80, 60, 10);
-    this.ctx.fillRect(centerX - 10, centerY - 50, 20, 20);
-    this.ctx.fillRect(centerX - 15, centerY - 30, 30, 10);
+    this.ctx.font = 'bold 12px "Press Start 2P", monospace';
+    this.ctx.fillText(`SCORE: ${this.gameState.score}`, centerX - 120, lineY);
+    
+    const achievePerfect = this.gameState.achievements >= this.gameState.totalAchievements - 5;
+    this.ctx.fillStyle = achievePerfect ? '#10B981' : '#ffffff';
+    this.ctx.fillText(`ACHIEVEMENTS: ${this.gameState.achievements}`, centerX + 120, lineY);
 
-    // Subtitle
+    lineY += 35;
+
+    // Divider
+    this.ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    this.ctx.lineWidth = 1;
+    this.ctx.beginPath();
+    this.ctx.moveTo(cardX + 20, lineY);
+    this.ctx.lineTo(cardX + cardW - 20, lineY);
+    this.ctx.stroke();
+
+    lineY += 25;
+
+    // Metrics Collected
+    this.ctx.fillStyle = '#F8931D';
+    this.ctx.font = 'bold 10px "Press Start 2P", monospace';
+    this.ctx.textAlign = 'left';
+    this.ctx.fillText('📊 KEY METRICS COLLECTED:', cardX + 30, lineY);
+    
+    lineY += 20;
     this.ctx.fillStyle = '#ffffff';
-    this.ctx.font = '12px "Press Start 2P", monospace';
-    this.ctx.fillText("You discovered Smeet's career journey!", centerX, centerY + 10);
+    this.ctx.font = '8px "Press Start 2P", monospace';
+    const metricsDisplay = this.gameState.metricsCollected.slice(0, 6).join(' • ') || 'None collected';
+    this.ctx.fillText(metricsDisplay, cardX + 30, lineY);
 
-    // Achievements
-    const achieveText = this.gameState.achievements === this.gameState.totalAchievements 
-      ? `ACHIEVEMENTS: ${this.gameState.achievements}/${this.gameState.totalAchievements} ★ PERFECT!`
-      : `ACHIEVEMENTS: ${this.gameState.achievements}/${this.gameState.totalAchievements}`;
-    this.ctx.fillStyle = this.gameState.achievements === this.gameState.totalAchievements ? '#10B981' : '#ffffff';
-    this.ctx.font = '10px "Press Start 2P", monospace';
-    this.ctx.fillText(achieveText, centerX, centerY + 40);
+    lineY += 30;
+
+    // Challenges Overcome
+    this.ctx.fillStyle = '#10B981';
+    this.ctx.font = 'bold 10px "Press Start 2P", monospace';
+    this.ctx.fillText('⚔️ CHALLENGES OVERCOME:', cardX + 30, lineY);
+    
+    lineY += 20;
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.font = '8px "Press Start 2P", monospace';
+    const challengesDisplay = this.gameState.challengesOvercome.slice(0, 5).join(' • ') || 'None defeated';
+    this.ctx.fillText(challengesDisplay, cardX + 30, lineY);
+
+    lineY += 30;
+
+    // Skills Demonstrated - show meaningful skills
+    this.ctx.fillStyle = '#DC2626';
+    this.ctx.font = 'bold 10px "Press Start 2P", monospace';
+    this.ctx.fillText('🎯 SKILLS DEMONSTRATED:', cardX + 30, lineY);
+    
+    lineY += 20;
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.font = '8px "Press Start 2P", monospace';
+    const skillsDisplay = 'Data Engineering • Analytics • AI Governance • Leadership';
+    this.ctx.fillText(skillsDisplay, cardX + 30, lineY);
+
+    lineY += 30;
+
+    // Compliance Flags
+    this.ctx.fillStyle = '#3B82F6';
+    this.ctx.font = 'bold 10px "Press Start 2P", monospace';
+    this.ctx.fillText(`🌍 COMPLIANCE: ${this.gameState.flagsCollected}/${this.gameState.totalFlags} Jurisdictions`, cardX + 30, lineY);
+
+    lineY += 25;
+
+    // Boss Status
+    this.ctx.fillStyle = this.gameState.bowserDefeated ? '#10B981' : '#EF4444';
+    this.ctx.font = 'bold 10px "Press Start 2P", monospace';
+    const bossStatus = this.gameState.bowserDefeated ? '✅ DATA CHAOS DEFEATED!' : '❌ Boss Not Defeated';
+    this.ctx.fillText(bossStatus, cardX + 30, lineY);
+
+    this.ctx.textAlign = 'center';
 
     // CTA Buttons
     const buttons = [
@@ -903,7 +1256,7 @@ export class RetroEngine {
     const buttonH = 35;
     const buttonGap = 15;
     const buttonsPerRow = 2;
-    const startY = centerY + 70;
+    const buttonStartY = lineY + 30;
 
     // Store button positions for click detection
     this.victoryButtons = [];
@@ -912,7 +1265,7 @@ export class RetroEngine {
       const row = Math.floor(i / buttonsPerRow);
       const col = i % buttonsPerRow;
       const bx = centerX + (col - 0.5) * (buttonW + buttonGap) - buttonW / 2;
-      const by = startY + row * (buttonH + buttonGap);
+      const by = buttonStartY + row * (buttonH + buttonGap);
 
       // Store for click detection
       this.victoryButtons.push({ x: bx, y: by, w: buttonW, h: buttonH, action: btn.action });
@@ -940,7 +1293,7 @@ export class RetroEngine {
     // Instructions
     this.ctx.fillStyle = 'rgba(255,255,255,0.5)';
     this.ctx.font = '8px "Press Start 2P", monospace';
-    this.ctx.fillText('Press 1-4 or Click to Select', centerX, startY + 2 * (buttonH + buttonGap) + 20);
+    this.ctx.fillText('Press 1-4 or Click to Select', centerX, buttonStartY + 2 * (buttonH + buttonGap) + 20);
   }
 
   public handleVictoryClick(x: number, y: number) {
@@ -970,11 +1323,7 @@ export class RetroEngine {
         break;
       case 'restart':
       case '4':
-        this.gameState.phase = 'intro';
-        this.gameState.introTimer = 0;
-        this.gameState.score = 0;
-        this.gameState.achievements = 0;
-        this.gameState.sectionsVisited = [];
+        this.restartLevel();
         break;
     }
   }
