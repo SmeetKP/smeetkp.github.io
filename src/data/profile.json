@@ -2,13 +2,13 @@
   "name": "Smeet Kumar Patel",
   "role": "Manager, Data Engineering, Analytics & GenAI Implementation",
   "location": "Berlin, Germany",
-  "summary": "Manager, Data Engineering, Analytics & GenAI Implementation with 14+ years of experience leading global data transformation initiatives across MedTech, Retail Banking, and Wealth Management. IIT Madras certified in Advanced Data Science & AI.",
-  "detailed_summary": "With 14+ years of experience transforming data into strategic business outcomes and an Advanced Certification in Data Science & AI from IIT Madras (CODE), I specialize in building enterprise-scale analytics solutions that drive measurable growth. At Sonova Group, I've pioneered Gen AI adoption (RAG chatbots, FastAPI-served analytics products, AI-powered HR Org Chart) across Finance, HR, Sales, and Marketing—reducing hallucinations by 90% and scaling to 1,000+ employees. I designed Medallion lakehouse architectures (Bronze→Silver→Gold) with MTTR <30 min and MTTD <15 min. At JPMorgan Chase, I drove customer analytics for Retail & Wealth Banking, building propensity models that grew acquisitions by +16% MoM and Next-Best-Action engines that improved client interactions by +2.5%.",
+  "summary": "Manager, Data Engineering, Analytics & GenAI Implementation with 14+ years of experience leading global data transformation initiatives across MedTech, Retail Banking, and Wealth Management.",
+  "detailed_summary": "I specialize in building enterprise-scale analytics and GenAI solutions that drive measurable growth. At Sonova Group, I pioneered RAG chatbots, FastAPI-served analytics products, and an AI-powered HR Org Chart — reducing hallucinations by 90% and scaling to 1,000+ employees. I designed Medallion lakehouse architectures achieving MTTR <30 min and 99.9% pipeline reliability. At JPMorgan Chase, I built propensity models that grew acquisitions by +16% MoM and Next-Best-Action engines that improved client interactions by +2.5%.",
   "attributes": [
-    "14+ years transforming data into strategic business outcomes",
-    "Based in Berlin, Germany",
-    "EU Blue Card Holder | US B1 Visa",
-    "English & Hindi (Fluent), German (Basic)",
-    "Advanced Certification in Data Science & AI — IIT Madras (CODE)"
+    "Pioneered GenAI adoption across Finance, HR, Sales & Marketing at enterprise scale",
+    "Architected Medallion lakehouses with 99.9% reliability across 20 countries",
+    "Built experimentation platforms (A/B, uplift, matched-pair) driving measurable ROI",
+    "Led cross-functional teams of 14+ across 6 countries using Agile DataOps",
+    "Established AI governance frameworks compliant with GDPR, EU AI Act & 18 jurisdictions"
   ]
 }

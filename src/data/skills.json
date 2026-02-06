@@ -5,6 +5,5 @@
   { "category": "Cloud & Tools", "items": ["Azure", "SAP Analytics Cloud", "Google Analytics 4", "API Development", "Data Pipelines"] },
   { "category": "Analytics & Experimentation", "items": ["A/B Testing", "Uplift Modeling", "RFM Analysis", "Propensity Modeling", "Causal Inference"] },
   { "category": "Methodologies", "items": ["Kaizen", "Lean Six Sigma", "Agile", "Data Quality Frameworks"] },
-  { "category": "Domain Expertise", "items": ["Retail Banking", "Wealth Management", "Customer Analytics", "Marketing Science", "MedTech / Audiological Care"] },
-  { "category": "Certifications", "items": ["Advanced Certification in Data Science & AI — IIT Madras (CODE)", "Feb 2022 – Sep 2022"] }
+  { "category": "Domain Expertise", "items": ["Retail Banking", "Wealth Management", "Customer Analytics", "Marketing Science", "MedTech / Audiological Care"] }
 ]
