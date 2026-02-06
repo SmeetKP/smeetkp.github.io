@@ -15,8 +15,33 @@
     "description": "Optimized resource allocation using predictive models."
   },
   {
-    "title": "Customer Segmentation",
-    "subtitle": "8% MoM acquisition lift",
-    "description": "Targeted marketing campaigns based on behavioral clusters."
+    "title": "Medallion Lakehouse Pipeline",
+    "subtitle": "Bronze → Silver → Gold",
+    "description": "Multi-layer lakehouse architecture with progressive quality gates, MTTR <30 min, MTTD <15 min."
+  },
+  {
+    "title": "HR Org Chart AI",
+    "subtitle": "AI-Powered Org Intelligence",
+    "description": "Org network analysis, succession planning, span-of-control optimization via FastAPI + React.js."
+  },
+  {
+    "title": "Revenue Driver Analytics",
+    "subtitle": "SHAP-based driver/blocker analysis",
+    "description": "Smart analytics identifying revenue blockers and growth drivers for Sales & Marketing teams."
+  },
+  {
+    "title": "Customer Segmentation & NBA",
+    "subtitle": "+16% MoM acquisition | +2.5% interactions",
+    "description": "RFM/propensity models and Next-Best-Action routing for Retail & Wealth Banking at JPMorgan Chase."
+  },
+  {
+    "title": "Experimentation Platform",
+    "subtitle": "+3.5% ROI uplift",
+    "description": "A/B testing, uplift modeling, and matched-pair testing for marketing optimization at JPMorgan Chase."
+  },
+  {
+    "title": "Retention & Churn Analytics",
+    "subtitle": "BCG-style portfolio view",
+    "description": "Trader lifecycle models and churn prediction during GameStop volatility at JPMorgan Chase."
   }
 ]

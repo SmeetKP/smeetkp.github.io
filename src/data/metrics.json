@@ -2,5 +2,6 @@
   { "value": "20", "label": "Countries", "color": "text-blue-400" },
   { "value": "175", "label": "Users Supported", "color": "text-emerald-400" },
   { "value": "21", "label": "Dashboards", "color": "text-amber-400" },
-  { "value": "53%", "label": "Daily Active", "color": "text-purple-400" }
+  { "value": "53%", "label": "Daily Active", "color": "text-purple-400" },
+  { "value": "90%", "label": "Hallucination Reduction", "color": "text-red-400" }
 ]

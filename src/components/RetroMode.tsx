@@ -101,6 +101,8 @@ export default function RetroMode({ onSwitchMode, onBack }: RetroModeProps) {
       // Set dynamic totals from level data
       engineRef.current.gameState.totalAchievements = levelData.totalAchievements;
       engineRef.current.gameState.totalFlags = levelData.totalFlags;
+      engineRef.current.gameState.levelLength = levelData.levelLength;
+      engineRef.current.gameState.zoneMarkers = levelData.zoneMarkers;
       
       // Check for deep link
       if (typeof window !== 'undefined') {

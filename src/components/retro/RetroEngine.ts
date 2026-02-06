@@ -49,7 +49,13 @@ export class RetroEngine {
       skillsUnlocked: [],
       metricsCollected: [],
       challengesOvercome: [],
-      hammerSwingTimer: 0
+      hammerSwingTimer: 0,
+      levelLength: 5000,
+      zoneMarkers: [],
+      messageQueue: [],
+      currentZone: '',
+      zoneOverlayTimer: 0,
+      zoneOverlayText: ''
     };
 
     // Default Player (Will be repositioned by level loader)
@@ -117,6 +123,10 @@ export class RetroEngine {
     this.gameState.skillsUnlocked = [];
     this.gameState.metricsCollected = [];
     this.gameState.challengesOvercome = [];
+    this.gameState.messageQueue = [];
+    this.gameState.currentZone = '';
+    this.gameState.zoneOverlayTimer = 0;
+    this.gameState.zoneOverlayText = '';
   }
 
   public resize(w: number, h: number) {
@@ -410,13 +420,43 @@ export class RetroEngine {
       }
     });
 
-    // Section Progress Tracking (dynamic based on bookmarks - simplified)
-    const playerX = this.player.x;
-    if (playerX >= 100 && !this.gameState.sectionsVisited.includes('about')) {
-      this.gameState.sectionsVisited.push('about');
+    // Message timer countdown + queue dequeue
+    if (this.gameState.message && this.gameState.messageTimer > 0) {
+      this.gameState.messageTimer -= dt;
+      if (this.gameState.messageTimer <= 0) {
+        // Current message expired — pop next from queue
+        if (this.gameState.messageQueue.length > 0) {
+          const next = this.gameState.messageQueue.shift()!;
+          this.gameState.message = next;
+          this.gameState.messageTimer = next.length > 30 ? 4.0 : 2.5;
+        } else {
+          this.gameState.message = null;
+          this.gameState.messageTimer = 0;
+        }
+      }
     }
-    if (playerX >= 500 && !this.gameState.sectionsVisited.includes('experience')) {
-      this.gameState.sectionsVisited.push('experience');
+
+    // Zone overlay timer countdown
+    if (this.gameState.zoneOverlayTimer > 0) {
+      this.gameState.zoneOverlayTimer -= dt;
+    }
+
+    // Zone detection — flash overlay when entering a new zone
+    const playerX = this.player.x;
+    const markers = this.gameState.zoneMarkers;
+    let detectedZone = 'INTRO';
+    for (let i = markers.length - 1; i >= 0; i--) {
+      if (playerX >= markers[i].x) {
+        detectedZone = markers[i].label;
+        break;
+      }
+    }
+    if (detectedZone !== this.gameState.currentZone) {
+      this.gameState.currentZone = detectedZone;
+      if (detectedZone !== 'INTRO') {
+        this.gameState.zoneOverlayText = `ENTERING: ${detectedZone}`;
+        this.gameState.zoneOverlayTimer = 2.0;
+      }
     }
 
     // Camera Follow
@@ -489,8 +529,14 @@ export class RetroEngine {
   }
 
   public showMessage(text: string) {
-      this.gameState.message = text;
-      this.gameState.messageTimer = 5.0; // Show for 5 seconds
+      if (this.gameState.message) {
+        // Queue the message if one is already showing
+        this.gameState.messageQueue.push(text);
+      } else {
+        this.gameState.message = text;
+        // Short messages get less time, long messages get more
+        this.gameState.messageTimer = text.length > 30 ? 4.0 : 2.5;
+      }
   }
 
   private spawnFireworks(x: number, y: number) {
@@ -571,7 +617,7 @@ export class RetroEngine {
     const requiredHeight = padding + (e.label ? titleHeight : 0) + (contentLines.length * lineHeight) + padding;
     
     // Use calculated size (adaptive) - minimum 150px wide
-    const billboardW = Math.max(150, Math.min(requiredWidth, 400));
+    const billboardW = Math.max(150, Math.min(requiredWidth, 200));
     const billboardH = Math.max(60, requiredHeight);
     
     // Professional dark background - sized to content
@@ -644,11 +690,36 @@ export class RetroEngine {
       return;
     }
 
-    // Clear Background (Sky Blue)
-    this.ctx.fillStyle = "#5c94fc"; // NES Mario Sky Blue
+    // Clear Background — warm sky gradient
+    const skyGrad = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+    skyGrad.addColorStop(0, '#87CEEB');   // light sky blue top
+    skyGrad.addColorStop(0.7, '#B0D4F1'); // soft mid
+    skyGrad.addColorStop(1, '#FFE4B5');   // warm moccasin near horizon
+    this.ctx.fillStyle = skyGrad;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     const camX = Math.floor(this.gameState.camera.x);
+
+    // Parallax hills silhouette (0.3x camera speed)
+    this.ctx.fillStyle = 'rgba(100, 140, 180, 0.25)';
+    const hillParallax = camX * 0.3;
+    for (let hx = -200; hx < this.canvas.width + 400; hx += 300) {
+      const baseX = hx - (hillParallax % 300);
+      this.ctx.beginPath();
+      this.ctx.moveTo(baseX, this.height);
+      this.ctx.quadraticCurveTo(baseX + 150, this.height - 120, baseX + 300, this.height);
+      this.ctx.fill();
+    }
+    // Nearer hills (0.5x camera speed)
+    this.ctx.fillStyle = 'rgba(80, 120, 160, 0.2)';
+    const nearHillParallax = camX * 0.5;
+    for (let hx = -100; hx < this.canvas.width + 400; hx += 250) {
+      const baseX = hx - (nearHillParallax % 250);
+      this.ctx.beginPath();
+      this.ctx.moveTo(baseX, this.height);
+      this.ctx.quadraticCurveTo(baseX + 125, this.height - 80, baseX + 250, this.height);
+      this.ctx.fill();
+    }
 
     // Render Entities
     for (const e of this.entities) {
@@ -666,45 +737,72 @@ export class RetroEngine {
         continue;
       }
 
-      // Coin Rendering (with bob animation)
+      // Coin Rendering (bob coin sprite only, text stays anchored)
       if (e.type === 'coin') {
         const bobOffset = Math.sin(this.animTimer / 200) * 5;
         const texture = TextureManager.get('coin');
         if (texture) {
           this.ctx.drawImage(texture, renderX, renderY + bobOffset, e.w, e.h);
         }
-        // Draw FULL label below coin with context (value + short label)
+        // Draw label below coin with dark pill background (text does NOT bob)
         if (e.metricValue && e.metricLabel) {
-          this.ctx.fillStyle = '#FFD700';
+          const shortLabel = e.metricLabel.split(' ').slice(0, 2).join(' ');
+          this.ctx.font = 'bold 8px "Press Start 2P", monospace';
+          const valW = this.ctx.measureText(e.metricValue).width;
+          this.ctx.font = '8px "Press Start 2P", monospace';
+          const lblW = this.ctx.measureText(shortLabel).width;
+          const pillW = Math.max(valW, lblW) + 12;
+          const pillH = 26;
+          const pillX = renderX + e.w / 2 - pillW / 2;
+          const pillY = renderY + e.h + 4;
+          // Dark pill background
+          this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
+          this.ctx.beginPath();
+          this.ctx.roundRect(pillX, pillY, pillW, pillH, 4);
+          this.ctx.fill();
+          // Value line
+          this.ctx.fillStyle = '#FFF8E1';
           this.ctx.font = 'bold 8px "Press Start 2P", monospace';
           this.ctx.textAlign = 'center';
-          // Show value on first line
-          this.ctx.fillText(e.metricValue, renderX + e.w/2, renderY + e.h + 12 + bobOffset);
-          // Show short context on second line
-          const shortLabel = e.metricLabel.split(' ').slice(0, 2).join(' ');
-          this.ctx.font = '6px "Press Start 2P", monospace';
-          this.ctx.fillText(shortLabel, renderX + e.w/2, renderY + e.h + 22 + bobOffset);
+          this.ctx.fillText(e.metricValue, renderX + e.w / 2, pillY + 10);
+          // Label line
+          this.ctx.font = '8px "Press Start 2P", monospace';
+          this.ctx.fillText(shortLabel, renderX + e.w / 2, pillY + 22);
         } else if (e.label) {
-          this.ctx.fillStyle = '#FFD700';
           this.ctx.font = 'bold 10px "Press Start 2P", monospace';
+          const lblW = this.ctx.measureText(e.label).width + 10;
+          const pillX = renderX + e.w / 2 - lblW / 2;
+          const pillY = renderY + e.h + 4;
+          this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
+          this.ctx.beginPath();
+          this.ctx.roundRect(pillX, pillY, lblW, 16, 4);
+          this.ctx.fill();
+          this.ctx.fillStyle = '#FFF8E1';
           this.ctx.textAlign = 'center';
-          this.ctx.fillText(e.label, renderX + e.w/2, renderY + e.h + 15 + bobOffset);
+          this.ctx.fillText(e.label, renderX + e.w / 2, pillY + 12);
         }
         continue;
       }
 
-      // Goomba Rendering with challenge label
+      // Goomba Rendering with challenge label (dark pill for readability)
       if (e.type === 'goomba') {
         const texture = TextureManager.get('goomba');
         if (texture) {
           this.ctx.drawImage(texture, renderX, renderY, e.w, e.h);
         }
-        // Show challenge label above goomba
+        // Show challenge label above goomba with dark pill
         if (e.label) {
-          this.ctx.fillStyle = '#DC2626';
           this.ctx.font = 'bold 8px "Press Start 2P", monospace';
+          const gLblW = this.ctx.measureText(e.label).width + 10;
+          const gPillX = renderX + e.w / 2 - gLblW / 2;
+          const gPillY = renderY - 20;
+          this.ctx.fillStyle = 'rgba(180,30,30,0.85)';
+          this.ctx.beginPath();
+          this.ctx.roundRect(gPillX, gPillY, gLblW, 16, 4);
+          this.ctx.fill();
+          this.ctx.fillStyle = '#FFFFFF';
           this.ctx.textAlign = 'center';
-          this.ctx.fillText(e.label, renderX + e.w/2, renderY - 8);
+          this.ctx.fillText(e.label, renderX + e.w / 2, gPillY + 12);
         }
         continue;
       }
@@ -726,12 +824,19 @@ export class RetroEngine {
         if (texture) {
           this.ctx.drawImage(texture, renderX, renderY + bobOffset, e.w, e.h);
         }
-        // Label below hammer
-        this.ctx.fillStyle = '#FFD700';
+        // Label below hammer with dark pill (text does NOT bob)
         this.ctx.font = 'bold 8px "Press Start 2P", monospace';
+        const hPillW = this.ctx.measureText('GOVERNANCE').width + 12;
+        const hPillX = renderX + e.w / 2 - hPillW / 2;
+        const hPillY = renderY + e.h + 4;
+        this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
+        this.ctx.beginPath();
+        this.ctx.roundRect(hPillX, hPillY, hPillW, 26, 4);
+        this.ctx.fill();
+        this.ctx.fillStyle = '#FFF8E1';
         this.ctx.textAlign = 'center';
-        this.ctx.fillText('GOVERNANCE', renderX + e.w/2, renderY + e.h + 12 + bobOffset);
-        this.ctx.fillText('HAMMER', renderX + e.w/2, renderY + e.h + 22 + bobOffset);
+        this.ctx.fillText('GOVERNANCE', renderX + e.w / 2, hPillY + 10);
+        this.ctx.fillText('HAMMER', renderX + e.w / 2, hPillY + 22);
         continue;
       }
 
@@ -925,7 +1030,7 @@ export class RetroEngine {
   renderHUD() {
     this.ctx.save();
     
-    // Score & Achievements
+    // ── Score & Achievements (top-left) ──
     this.ctx.fillStyle = '#ffffff';
     this.ctx.font = '14px "Press Start 2P", monospace';
     this.ctx.textAlign = 'left';
@@ -934,56 +1039,115 @@ export class RetroEngine {
     
     this.ctx.fillText(`SCORE: ${this.gameState.score}`, 20, 35);
     
-    // Achievements counter
     const achieveColor = this.gameState.achievements === this.gameState.totalAchievements ? '#10B981' : '#FFD700';
     this.ctx.fillStyle = achieveColor;
     this.ctx.fillText(`★ ${this.gameState.achievements}/${this.gameState.totalAchievements}`, 20, 60);
 
-    // Progress Tracker (right side)
-    const sections = ['about', 'experience', 'skills', 'contact'];
-    const dotSize = 12;
-    const dotGap = 8;
-    const trackerWidth = sections.length * (dotSize + dotGap);
-    const trackerX = this.width - trackerWidth - 20;
-    const trackerY = 35;
+    // ── Progress Bar (top center, below score line) ──
+    const barLeftMargin = 200;
+    const barRightMargin = 380; // Extra right margin to avoid overlapping CV/PROFESSIONAL/EXIT buttons
+    const barX = barLeftMargin;
+    const barW = this.width - barLeftMargin - barRightMargin;
+    const barY = 18;
+    const barH = 14;
+    const progress = Math.min(1, Math.max(0, this.player.x / this.gameState.levelLength));
 
+    // Bar background
+    this.ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    this.ctx.beginPath();
+    this.ctx.roundRect(barX, barY, barW, barH, 7);
+    this.ctx.fill();
+
+    // Bar fill — warm gradient
+    if (progress > 0.005) {
+      const fillW = Math.max(barH, barW * progress); // min width = bar height for rounded look
+      const barGrad = this.ctx.createLinearGradient(barX, 0, barX + fillW, 0);
+      barGrad.addColorStop(0, '#F59E0B');   // amber
+      barGrad.addColorStop(1, '#EF4444');   // red at end
+      this.ctx.fillStyle = barGrad;
+      this.ctx.beginPath();
+      this.ctx.roundRect(barX, barY, fillW, barH, 7);
+      this.ctx.fill();
+    }
+
+    // Bar border
+    this.ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+    this.ctx.lineWidth = 1;
+    this.ctx.beginPath();
+    this.ctx.roundRect(barX, barY, barW, barH, 7);
+    this.ctx.stroke();
+
+    // Zone markers on bar
+    this.ctx.font = '6px "Press Start 2P", monospace';
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'top';
+    const markers = this.gameState.zoneMarkers;
+    for (const marker of markers) {
+      const markerProgress = marker.x / this.gameState.levelLength;
+      const mx = barX + barW * markerProgress;
+      // Tick mark
+      this.ctx.fillStyle = 'rgba(255,255,255,0.8)';
+      this.ctx.fillRect(mx - 1, barY - 2, 2, barH + 4);
+      // Label below bar
+      this.ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      this.ctx.fillText(marker.label, mx, barY + barH + 3);
+    }
+
+    // Percentage text
     this.ctx.font = '8px "Press Start 2P", monospace';
     this.ctx.fillStyle = '#ffffff';
     this.ctx.textAlign = 'right';
-    this.ctx.fillText('JOURNEY', trackerX - 10, trackerY + 4);
+    this.ctx.textBaseline = 'middle';
+    this.ctx.fillText(`${Math.round(progress * 100)}%`, barX + barW + 35, barY + barH / 2);
 
-    sections.forEach((section, i) => {
-      const dx = trackerX + i * (dotSize + dotGap);
-      const visited = this.gameState.sectionsVisited.includes(section);
-      
-      // Dot background
-      this.ctx.fillStyle = visited ? '#10B981' : 'rgba(255,255,255,0.3)';
+    // ── Zone Overlay (Fix 5 — flash zone name on entry) ──
+    if (this.gameState.zoneOverlayTimer > 0 && this.gameState.zoneOverlayText) {
+      // Fade in first 0.3s, hold, fade out last 0.5s
+      let overlayAlpha = 1;
+      const remaining = this.gameState.zoneOverlayTimer;
+      const total = 2.0;
+      if (remaining > total - 0.3) {
+        overlayAlpha = (total - remaining) / 0.3; // fade in
+      } else if (remaining < 0.5) {
+        overlayAlpha = remaining / 0.5; // fade out
+      }
+      this.ctx.globalAlpha = overlayAlpha;
+      // Dark banner across top-center
+      const bannerW = Math.min(500, this.width * 0.6);
+      const bannerH = 50;
+      const bannerX = (this.width - bannerW) / 2;
+      const bannerY = 80;
+      this.ctx.fillStyle = 'rgba(0,0,0,0.8)';
       this.ctx.beginPath();
-      this.ctx.arc(dx + dotSize/2, trackerY, dotSize/2, 0, Math.PI * 2);
+      this.ctx.roundRect(bannerX, bannerY, bannerW, bannerH, 8);
       this.ctx.fill();
-      
-      // Dot border
-      this.ctx.strokeStyle = '#ffffff';
+      this.ctx.strokeStyle = '#F59E0B';
       this.ctx.lineWidth = 2;
+      this.ctx.beginPath();
+      this.ctx.roundRect(bannerX, bannerY, bannerW, bannerH, 8);
       this.ctx.stroke();
-    });
-    
-    // Message Box (if active)
+      // Text
+      this.ctx.fillStyle = '#FFF8E1';
+      this.ctx.font = 'bold 16px "Press Start 2P", monospace';
+      this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'middle';
+      this.ctx.fillText(this.gameState.zoneOverlayText, this.width / 2, bannerY + bannerH / 2);
+      this.ctx.globalAlpha = 1;
+    }
+
+    // ── Message Box (Fix 3 — bottom of screen, RPG dialogue style) ──
     if (this.gameState.message) {
-        const boxX = 20;
-        const boxW = this.width - 40;
-        const boxY = 100; // Fixed top position (Below Score/Coins)
+        const boxW = Math.min(this.width * 0.6, 600);
+        const boxX = (this.width - boxW) / 2;
         
-        // Calculate Wrapped Lines First
-        this.ctx.font = '14px "Press Start 2P", monospace';
+        // Calculate Wrapped Lines
+        this.ctx.font = '12px "Press Start 2P", monospace';
         const words = this.gameState.message.split(' ');
         let line = '';
-        let lines: string[] = [];
-        
-        // Approximate char width for 14px font ~ 14px (monospace)
-        const maxChars = Math.floor((boxW - 40) / 14);
+        const lines: string[] = [];
+        const maxChars = Math.floor((boxW - 40) / 12);
 
-        for(let n = 0; n < words.length; n++) {
+        for (let n = 0; n < words.length; n++) {
           const testLine = line + words[n] + ' ';
           if (testLine.length > maxChars && n > 0) {
             lines.push(line);
@@ -994,27 +1158,36 @@ export class RetroEngine {
         }
         lines.push(line);
 
-        // Calculate Dynamic Height
-        const lineHeight = 24;
-        const padding = 20;
-        const boxHeight = Math.max(80, (lines.length * lineHeight) + (padding * 2));
+        const lineHeight = 20;
+        const padding = 16;
+        const boxHeight = Math.max(50, (lines.length * lineHeight) + (padding * 2));
+        const boxY = this.height - boxHeight - 80; // Above ground, below gameplay
 
-        // Render Box Background
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.9)'; // Darker for better readability
-        this.ctx.strokeStyle = '#ffffff';
-        this.ctx.lineWidth = 4;
-        this.ctx.fillRect(boxX, boxY, boxW, boxHeight);
-        this.ctx.strokeRect(boxX, boxY, boxW, boxHeight);
+        // Box background with rounded corners
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+        this.ctx.beginPath();
+        this.ctx.roundRect(boxX, boxY, boxW, boxHeight, 8);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#F59E0B';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.roundRect(boxX, boxY, boxW, boxHeight, 8);
+        this.ctx.stroke();
 
-        // Render Text
-        this.ctx.fillStyle = '#ffffff';
+        // Text
+        this.ctx.fillStyle = '#FFF8E1';
         this.ctx.textAlign = 'center';
-        this.ctx.textBaseline = 'top'; // Draw from top
+        this.ctx.textBaseline = 'top';
         
         lines.forEach((l, i) => {
             const lineY = boxY + padding + (i * lineHeight);
             this.ctx.fillText(l.trim(), this.width / 2, lineY);
         });
+
+        // Dismiss hint
+        this.ctx.font = '7px "Press Start 2P", monospace';
+        this.ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        this.ctx.fillText('▼', this.width / 2, boxY + boxHeight - 10);
     }
 
     if (this.gameState.phase === 'gameOver') {
@@ -1024,6 +1197,7 @@ export class RetroEngine {
       this.ctx.fillStyle = '#ffffff';
       this.ctx.font = '32px "Press Start 2P", monospace';
       this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'middle';
       this.ctx.fillText('GAME OVER', this.width/2, this.height/2);
       this.ctx.font = '16px "Press Start 2P", monospace';
       this.ctx.fillText('Press R to Retry', this.width/2, this.height/2 + 50);
@@ -1139,161 +1313,213 @@ export class RetroEngine {
     }
   }
 
+  private wrapText(text: string, maxWidth: number, font: string): string[] {
+    this.ctx.font = font;
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let currentLine = '';
+
+    for (const word of words) {
+      const testLine = currentLine ? currentLine + ' ' + word : word;
+      if (this.ctx.measureText(testLine).width > maxWidth && currentLine) {
+        lines.push(currentLine);
+        currentLine = word;
+      } else {
+        currentLine = testLine;
+      }
+    }
+    if (currentLine) lines.push(currentLine);
+    return lines;
+  }
+
   private renderVictoryScreen() {
     // Semi-transparent overlay
-    this.ctx.fillStyle = 'rgba(0,0,0,0.9)';
+    this.ctx.fillStyle = 'rgba(0,0,0,0.92)';
     this.ctx.fillRect(0, 0, this.width, this.height);
 
     const centerX = this.width / 2;
-    const startY = 40;
+    const pad = 30;
+    const cardW = Math.min(540, this.width - 60);
+    const cardX = centerX - cardW / 2;
+    const innerW = cardW - pad * 2;
 
-    // Title
+    // Title — sized to fit screen
+    const titleFont = this.width < 700
+      ? 'bold 14px "Press Start 2P", monospace'
+      : 'bold 18px "Press Start 2P", monospace';
     this.ctx.fillStyle = '#F8931D';
-    this.ctx.font = 'bold 24px "Press Start 2P", monospace';
+    this.ctx.font = titleFont;
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
-    this.ctx.fillText('🏆 SONOVA WORLD COMPLETE! 🏆', centerX, startY);
+    this.ctx.fillText('QUEST COMPLETE', centerX, 28);
+    this.ctx.fillStyle = '#FFD700';
+    const subFont = this.width < 700
+      ? 'bold 10px "Press Start 2P", monospace'
+      : 'bold 13px "Press Start 2P", monospace';
+    this.ctx.font = subFont;
+    this.ctx.fillText('DATA ANALYTICS EXPERT!', centerX, 52);
 
-    // Summary Card Background
-    const cardX = centerX - 280;
-    const cardY = startY + 30;
-    const cardW = 560;
-    const cardH = 320;
-    
+    // Summary Card
+    const cardY = 68;
+    const contentFont = '7px "Press Start 2P", monospace';
+    const headingFont = 'bold 8px "Press Start 2P", monospace';
+
+    // Pre-calculate wrapped lines for dynamic card height
+    const metricsText = this.gameState.metricsCollected.slice(0, 6).join(' \u2022 ') || 'None collected';
+    const metricsLines = this.wrapText(metricsText, innerW, contentFont);
+    const challengesText = this.gameState.challengesOvercome.slice(0, 5).join(' \u2022 ') || 'None defeated';
+    const challengeLines = this.wrapText(challengesText, innerW, contentFont);
+    const skillsText = 'Data Engineering \u2022 Analytics \u2022 AI Governance \u2022 Leadership';
+    const skillsLines = this.wrapText(skillsText, innerW, contentFont);
+
+    // Button dimensions (needed for total card height)
+    const buttonGap = 16;
+    const buttonH = 36;
+    const buttonsPerRow = 2;
+    const buttonW = Math.floor((cardW - pad * 2 - buttonGap) / buttonsPerRow);
+    const buttonRows = 2;
+
+    let calcY = 0;
+    calcY += 28; // score row + divider
+    calcY += 14; // divider gap
+    calcY += 16 + metricsLines.length * 14 + 6;   // metrics heading + lines
+    calcY += 16 + challengeLines.length * 14 + 6;  // challenges heading + lines
+    calcY += 16 + skillsLines.length * 14 + 6;     // skills heading + lines
+    calcY += 16; // compliance
+    calcY += 16; // boss status
+    calcY += 20; // gap before buttons
+    calcY += buttonRows * buttonH + (buttonRows - 1) * buttonGap; // buttons
+    calcY += 30; // instructions + bottom padding
+    const cardH = calcY + pad;
+
     this.ctx.fillStyle = 'rgba(26, 26, 46, 0.95)';
     this.ctx.fillRect(cardX, cardY, cardW, cardH);
     this.ctx.strokeStyle = '#F8931D';
-    this.ctx.lineWidth = 3;
+    this.ctx.lineWidth = 2;
     this.ctx.strokeRect(cardX, cardY, cardW, cardH);
 
-    let lineY = cardY + 30;
+    let lineY = cardY + 20;
 
-    // Score & Achievements Row
-    this.ctx.fillStyle = '#FFD700';
-    this.ctx.font = 'bold 12px "Press Start 2P", monospace';
-    this.ctx.fillText(`SCORE: ${this.gameState.score}`, centerX - 120, lineY);
-    
-    const achievePerfect = this.gameState.achievements >= this.gameState.totalAchievements - 5;
-    this.ctx.fillStyle = achievePerfect ? '#10B981' : '#ffffff';
-    this.ctx.fillText(`ACHIEVEMENTS: ${this.gameState.achievements}`, centerX + 120, lineY);
-
-    lineY += 35;
-
-    // Divider
-    this.ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-    this.ctx.lineWidth = 1;
-    this.ctx.beginPath();
-    this.ctx.moveTo(cardX + 20, lineY);
-    this.ctx.lineTo(cardX + cardW - 20, lineY);
-    this.ctx.stroke();
-
-    lineY += 25;
-
-    // Metrics Collected
-    this.ctx.fillStyle = '#F8931D';
+    // Score & Achievements
     this.ctx.font = 'bold 10px "Press Start 2P", monospace';
     this.ctx.textAlign = 'left';
-    this.ctx.fillText('📊 KEY METRICS COLLECTED:', cardX + 30, lineY);
-    
-    lineY += 20;
+    this.ctx.fillStyle = '#FFD700';
+    this.ctx.fillText(`SCORE: ${this.gameState.score}`, cardX + pad, lineY);
+    this.ctx.textAlign = 'right';
+    const achievePerfect = this.gameState.achievements >= this.gameState.totalAchievements - 5;
+    this.ctx.fillStyle = achievePerfect ? '#10B981' : '#ffffff';
+    this.ctx.fillText(`ACHIEVEMENTS: ${this.gameState.achievements}`, cardX + cardW - pad, lineY);
+    lineY += 22;
+
+    // Divider
+    this.ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    this.ctx.lineWidth = 1;
+    this.ctx.beginPath();
+    this.ctx.moveTo(cardX + pad, lineY);
+    this.ctx.lineTo(cardX + cardW - pad, lineY);
+    this.ctx.stroke();
+    lineY += 14;
+
+    // --- Metrics Collected ---
+    this.ctx.textAlign = 'left';
+    this.ctx.fillStyle = '#F8931D';
+    this.ctx.font = headingFont;
+    this.ctx.fillText('KEY METRICS COLLECTED:', cardX + pad, lineY);
+    lineY += 16;
     this.ctx.fillStyle = '#ffffff';
-    this.ctx.font = '8px "Press Start 2P", monospace';
-    const metricsDisplay = this.gameState.metricsCollected.slice(0, 6).join(' • ') || 'None collected';
-    this.ctx.fillText(metricsDisplay, cardX + 30, lineY);
+    this.ctx.font = contentFont;
+    for (const ml of metricsLines) {
+      this.ctx.fillText(ml, cardX + pad, lineY);
+      lineY += 14;
+    }
+    lineY += 6;
 
-    lineY += 30;
-
-    // Challenges Overcome
+    // --- Challenges Overcome ---
     this.ctx.fillStyle = '#10B981';
-    this.ctx.font = 'bold 10px "Press Start 2P", monospace';
-    this.ctx.fillText('⚔️ CHALLENGES OVERCOME:', cardX + 30, lineY);
-    
-    lineY += 20;
+    this.ctx.font = headingFont;
+    this.ctx.fillText('CHALLENGES OVERCOME:', cardX + pad, lineY);
+    lineY += 16;
     this.ctx.fillStyle = '#ffffff';
-    this.ctx.font = '8px "Press Start 2P", monospace';
-    const challengesDisplay = this.gameState.challengesOvercome.slice(0, 5).join(' • ') || 'None defeated';
-    this.ctx.fillText(challengesDisplay, cardX + 30, lineY);
+    this.ctx.font = contentFont;
+    for (const cl of challengeLines) {
+      this.ctx.fillText(cl, cardX + pad, lineY);
+      lineY += 14;
+    }
+    lineY += 6;
 
-    lineY += 30;
-
-    // Skills Demonstrated - show meaningful skills
+    // --- Skills Demonstrated ---
     this.ctx.fillStyle = '#DC2626';
-    this.ctx.font = 'bold 10px "Press Start 2P", monospace';
-    this.ctx.fillText('🎯 SKILLS DEMONSTRATED:', cardX + 30, lineY);
-    
-    lineY += 20;
+    this.ctx.font = headingFont;
+    this.ctx.fillText('SKILLS DEMONSTRATED:', cardX + pad, lineY);
+    lineY += 16;
     this.ctx.fillStyle = '#ffffff';
-    this.ctx.font = '8px "Press Start 2P", monospace';
-    const skillsDisplay = 'Data Engineering • Analytics • AI Governance • Leadership';
-    this.ctx.fillText(skillsDisplay, cardX + 30, lineY);
+    this.ctx.font = contentFont;
+    for (const sl of skillsLines) {
+      this.ctx.fillText(sl, cardX + pad, lineY);
+      lineY += 14;
+    }
+    lineY += 6;
 
-    lineY += 30;
-
-    // Compliance Flags
+    // --- Compliance ---
     this.ctx.fillStyle = '#3B82F6';
-    this.ctx.font = 'bold 10px "Press Start 2P", monospace';
-    this.ctx.fillText(`🌍 COMPLIANCE: ${this.gameState.flagsCollected}/${this.gameState.totalFlags} Jurisdictions`, cardX + 30, lineY);
+    this.ctx.font = headingFont;
+    this.ctx.fillText(`COMPLIANCE: ${this.gameState.flagsCollected}/${this.gameState.totalFlags} Jurisdictions`, cardX + pad, lineY);
+    lineY += 16;
 
-    lineY += 25;
-
-    // Boss Status
+    // --- Boss Status ---
     this.ctx.fillStyle = this.gameState.bowserDefeated ? '#10B981' : '#EF4444';
-    this.ctx.font = 'bold 10px "Press Start 2P", monospace';
-    const bossStatus = this.gameState.bowserDefeated ? '✅ DATA CHAOS DEFEATED!' : '❌ Boss Not Defeated';
-    this.ctx.fillText(bossStatus, cardX + 30, lineY);
+    this.ctx.font = headingFont;
+    const bossStatus = this.gameState.bowserDefeated ? 'DATA CHAOS DEFEATED!' : 'Boss Not Defeated';
+    this.ctx.fillText(bossStatus, cardX + pad, lineY);
+    lineY += 20;
 
+    // ========== CTA BUTTONS ==========
     this.ctx.textAlign = 'center';
 
-    // CTA Buttons
     const buttons = [
-      { key: '1', label: '📧 CONTACT ME', action: 'contact' },
-      { key: '2', label: '📄 VIEW RESUME', action: 'resume' },
-      { key: '3', label: '💼 LINKEDIN', action: 'linkedin' },
-      { key: '4', label: '🔄 PLAY AGAIN', action: 'restart' }
+      { key: '1', label: 'CONTACT ME', action: 'contact' },
+      { key: '2', label: 'VIEW RESUME', action: 'resume' },
+      { key: '3', label: 'LINKEDIN', action: 'linkedin' },
+      { key: '4', label: 'PLAY AGAIN', action: 'restart' }
     ];
 
-    const buttonW = 180;
-    const buttonH = 35;
-    const buttonGap = 15;
-    const buttonsPerRow = 2;
-    const buttonStartY = lineY + 30;
+    const btnStartY = lineY + 10;
 
-    // Store button positions for click detection
     this.victoryButtons = [];
 
     buttons.forEach((btn, i) => {
       const row = Math.floor(i / buttonsPerRow);
       const col = i % buttonsPerRow;
-      const bx = centerX + (col - 0.5) * (buttonW + buttonGap) - buttonW / 2;
-      const by = buttonStartY + row * (buttonH + buttonGap);
+      const bx = cardX + pad + col * (buttonW + buttonGap);
+      const by = btnStartY + row * (buttonH + buttonGap);
 
-      // Store for click detection
       this.victoryButtons.push({ x: bx, y: by, w: buttonW, h: buttonH, action: btn.action });
 
       // Button background
-      this.ctx.fillStyle = 'rgba(255,255,255,0.1)';
+      this.ctx.fillStyle = 'rgba(255,255,255,0.08)';
       this.ctx.fillRect(bx, by, buttonW, buttonH);
-      this.ctx.strokeStyle = '#ffffff';
-      this.ctx.lineWidth = 2;
+      this.ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+      this.ctx.lineWidth = 1.5;
       this.ctx.strokeRect(bx, by, buttonW, buttonH);
 
-      // Button text
+      // Button label
       this.ctx.fillStyle = '#ffffff';
-      this.ctx.font = '10px "Press Start 2P", monospace';
-      this.ctx.fillText(btn.label, bx + buttonW / 2, by + buttonH / 2);
-
-      // Key hint
-      this.ctx.fillStyle = 'rgba(255,255,255,0.5)';
       this.ctx.font = '8px "Press Start 2P", monospace';
+      this.ctx.fillText(btn.label, bx + buttonW / 2, by + buttonH / 2 + 1);
+
+      // Key hint (top-left corner)
+      this.ctx.fillStyle = 'rgba(248,147,29,0.8)';
+      this.ctx.font = '7px "Press Start 2P", monospace';
       this.ctx.textAlign = 'left';
-      this.ctx.fillText(`[${btn.key}]`, bx + 5, by + buttonH / 2);
+      this.ctx.fillText(`[${btn.key}]`, bx + 6, by + 12);
       this.ctx.textAlign = 'center';
     });
 
     // Instructions
-    this.ctx.fillStyle = 'rgba(255,255,255,0.5)';
-    this.ctx.font = '8px "Press Start 2P", monospace';
-    this.ctx.fillText('Press 1-4 or Click to Select', centerX, buttonStartY + 2 * (buttonH + buttonGap) + 20);
+    const instrY = btnStartY + buttonRows * (buttonH + buttonGap) + 4;
+    this.ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    this.ctx.font = '7px "Press Start 2P", monospace';
+    this.ctx.fillText('Press 1-4 or Click to Select', centerX, instrY);
   }
 
   public handleVictoryClick(x: number, y: number) {

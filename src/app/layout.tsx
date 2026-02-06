@@ -37,7 +37,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Smeet Kumar Patel - Data Analytics Manager & AI Solutions Architect",
+        alt: "Smeet Kumar Patel - Manager, Data Engineering, Analytics & GenAI Implementation",
       },
     ],
   },

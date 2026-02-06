@@ -1,6 +1,10 @@
 [
-  { "category": "BI & Data Engineering", "items": ["Power BI", "Tableau", "Databricks", "DBT", "Fivetran"] },
-  { "category": "Programming", "items": ["Python", "SQL", "ML Models", "Statistical Modeling"] },
+  { "category": "BI & Data Engineering", "items": ["Power BI", "Tableau", "Databricks", "DBT", "Fivetran", "Hadoop/Hive", "Spark"] },
+  { "category": "Programming", "items": ["Python", "SQL", "ML Models", "Statistical Modeling", "Pandas/NumPy", "SciPy/StatsModels"] },
+  { "category": "Gen AI & Architecture", "items": ["RAG Architecture", "LangChain", "Vector Databases", "FastAPI", "Prompt Engineering", "AI Governance", "Medallion Architecture"] },
   { "category": "Cloud & Tools", "items": ["Azure", "SAP Analytics Cloud", "Google Analytics 4", "API Development", "Data Pipelines"] },
-  { "category": "Methodologies", "items": ["Kaizen", "Lean Six Sigma", "Agile", "Data Quality Frameworks"] }
+  { "category": "Analytics & Experimentation", "items": ["A/B Testing", "Uplift Modeling", "RFM Analysis", "Propensity Modeling", "Causal Inference"] },
+  { "category": "Methodologies", "items": ["Kaizen", "Lean Six Sigma", "Agile", "Data Quality Frameworks"] },
+  { "category": "Domain Expertise", "items": ["Retail Banking", "Wealth Management", "Customer Analytics", "Marketing Science", "MedTech / Audiological Care"] },
+  { "category": "Certifications", "items": ["Advanced Certification in Data Science & AI — IIT Madras (CODE)", "Feb 2022 – Sep 2022"] }
 ]

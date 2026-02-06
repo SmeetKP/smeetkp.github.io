@@ -21,13 +21,15 @@
     ]
   },
   {
-    "company": "JP Morgan & Chase",
-    "role": "Data Science Associate",
+    "company": "JPMorgan Chase",
+    "role": "Data Science Associate — Customer & Digital Analytics",
     "period": "Jun 2019 - Mar 2022",
     "location": "Mumbai, India",
     "highlights": [
-      "8% MoM acquisition increase via customer segmentation",
-      "Reduced drop-off rates by 7% using multi-armed bandit models"
+      "+16% MoM retirement account acquisitions via RFM/propensity models",
+      "+2.5% weekly client interactions via Next-Best-Action RM routing",
+      "-8% drop-off/abandonment through intelligent client matching",
+      "+3.5% marketing ROI uplift via matched-pair A/B testing"
     ]
   },
   {

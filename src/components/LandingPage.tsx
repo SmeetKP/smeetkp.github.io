@@ -550,12 +550,12 @@ export default function LandingPage({ onSelectMode }: LandingPageProps) {
           <p className={`text-lg md:text-xl lg:text-2xl mb-2 animate-fade-in-up animation-delay-200 ${
             isDarkMode ? "text-slate-300" : "text-slate-700"
           }`}>
-            Data Analytics Manager & AI Solutions Architect
+            Manager, Data Engineering, Analytics & GenAI Implementation
           </p>
         )}
         
         {introDone && (
-          <p className={`text-base md:text-lg mb-4 animate-fade-in-up animation-delay-300 ${
+          <p className={`text-base md:text-lg mb-2 animate-fade-in-up animation-delay-300 ${
             isDarkMode ? "text-slate-400" : "text-slate-600"
           }`}>
             Transforming Data into{" "}
@@ -563,6 +563,14 @@ export default function LandingPage({ onSelectMode }: LandingPageProps) {
               words={flipWords} 
               className={`font-semibold ${isDarkMode ? "text-cyan-400" : "text-blue-600"}`}
             />
+          </p>
+        )}
+
+        {introDone && (
+          <p className={`text-sm mb-4 animate-fade-in-up animation-delay-350 inline-flex items-center gap-2 px-3 py-1 rounded-full ${
+            isDarkMode ? "bg-amber-500/10 text-amber-300 border border-amber-500/30" : "bg-amber-50 text-amber-700 border border-amber-200"
+          }`}>
+            🎓 IIT Madras — Advanced Certification in Data Science & AI
           </p>
         )}
 

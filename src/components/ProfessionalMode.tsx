@@ -21,11 +21,13 @@ interface ProfessionalModeProps {
 }
 
 const TRUST_LOGOS = [
+  { name: "JP Morgan & Chase", industry: "Banking", color: "from-slate-500/20 to-blue-500/20" },
   { name: "Sonova", industry: "MedTech", color: "from-blue-500/20 to-cyan-500/20" },
   { name: "Phonak", industry: "Hearing", color: "from-blue-500/20 to-blue-600/20" },
   { name: "Unitron", industry: "Hearing", color: "from-cyan-500/20 to-blue-500/20" },
   { name: "Advanced Bionics", industry: "Cochlear", color: "from-blue-600/20 to-cyan-500/20" },
   { name: "Sennheiser", industry: "Audio", color: "from-cyan-500/20 to-blue-600/20" },
+  { name: "IIT Madras (CODE)", industry: "Certification", color: "from-amber-500/20 to-orange-500/20" },
 ];
 
 const NAV_SECTIONS = [
@@ -47,6 +49,30 @@ const SKILL_LEVELS: Record<string, "expert" | "advanced" | "proficient"> = {
   "Data Engineering": "advanced",
   "Leadership": "expert",
   "Strategy": "expert",
+  "A/B Testing": "expert",
+  "Uplift Modeling": "advanced",
+  "RFM Analysis": "expert",
+  "Propensity Modeling": "expert",
+  "Causal Inference": "advanced",
+  "Hadoop/Hive": "advanced",
+  "Spark": "advanced",
+  "Pandas/NumPy": "expert",
+  "SciPy/StatsModels": "advanced",
+  "Retail Banking": "expert",
+  "Wealth Management": "advanced",
+  "Customer Analytics": "expert",
+  "Marketing Science": "expert",
+  "MedTech / Audiological Care": "expert",
+  "Databricks": "expert",
+  "ML Models": "advanced",
+  "Statistical Modeling": "advanced",
+  "RAG Architecture": "expert",
+  "LangChain": "advanced",
+  "Vector Databases": "advanced",
+  "FastAPI": "advanced",
+  "Prompt Engineering": "advanced",
+  "AI Governance": "expert",
+  "Medallion Architecture": "expert",
 };
 
 export default function ProfessionalMode({ onSwitchMode, onBack }: ProfessionalModeProps) {
@@ -494,6 +520,27 @@ export default function ProfessionalMode({ onSwitchMode, onBack }: ProfessionalM
                   <span className={isDarkMode ? "text-slate-300" : "text-slate-700"}>{attr}</span>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* Certification Highlight */}
+          <div className={`mt-6 p-5 rounded-2xl border flex items-center gap-4 ${
+            isDarkMode
+              ? "bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/30"
+              : "bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 shadow-sm"
+          }`}>
+            <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-2xl ${
+              isDarkMode ? "bg-amber-500/20" : "bg-amber-100"
+            }`}>
+              🎓
+            </div>
+            <div className="flex-1">
+              <p className={`font-bold ${isDarkMode ? "text-amber-300" : "text-amber-700"}`}>
+                Advanced Certification in Data Science & AI
+              </p>
+              <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                IIT Madras — Centre for Outreach & Digital Education (CODE) · Feb 2022 – Sep 2022
+              </p>
             </div>
           </div>
         </section>

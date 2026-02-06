@@ -7,6 +7,8 @@ export interface LevelData {
   bookmarks: Record<string, number>;
   totalAchievements: number;
   totalFlags: number;
+  levelLength: number;
+  zoneMarkers: { label: string; x: number }[];
 }
 
 // Section-specific challenge definitions - meaningful defeat messages for recruiters
@@ -19,15 +21,15 @@ const SECTION_CHALLENGES: Record<string, { label: string; defeatMessage: string 
     { label: 'ALIGN', defeatMessage: 'Aligned C-suite reporting!' }
   ],
   'data-engineering': [
-    { label: 'MANUAL', defeatMessage: 'Automated pipelines, saved 75% FTE!' },
-    { label: 'SLOW', defeatMessage: 'Reduced reporting cycle by 35%!' }
+    { label: 'MANUAL', defeatMessage: 'Medallion lakehouse: Bronze→Silver→Gold!' },
+    { label: 'SLOW', defeatMessage: 'MTTR <30min, MTTD <15min achieved!' }
   ],
   'data-governance': [
-    { label: 'LEAK', defeatMessage: 'Implemented Unity Catalog controls!' },
+    { label: 'LEAK', defeatMessage: 'Tracking 15+ KRIs with anomaly detection!' },
     { label: 'GDPR', defeatMessage: 'Achieved 20 jurisdiction compliance!' }
   ],
   'genai-delivery': [
-    { label: 'AI RISK', defeatMessage: 'Reduced hallucinations by 90%!' },
+    { label: 'AI RISK', defeatMessage: 'Reduced hallucinations by 90% with RAG + FastAPI!' },
     { label: 'PII', defeatMessage: 'Established AI Governance Board!' }
   ],
   'data-apps': [
@@ -40,15 +42,36 @@ const SECTION_CHALLENGES: Record<string, { label: string; defeatMessage: string 
   'advanced-analytics': [
     { label: 'COST', defeatMessage: 'Reduced workforce costs by 15%!' },
     { label: 'WASTE', defeatMessage: 'Optimized resource allocation!' }
+  ],
+  'propensity-segmentation': [
+    { label: 'CHURN', defeatMessage: '+16% MoM retirement account acquisitions!' }
+  ],
+  'experimentation-uplift': [
+    { label: 'BIAS', defeatMessage: 'Built robust A/B testing with uplift readouts!' }
+  ],
+  'next-best-action': [
+    { label: 'MISMATCH', defeatMessage: '+2.5% weekly client interactions via NBA!' }
+  ],
+  'digital-funnel-optimization': [
+    { label: 'FRICTION', defeatMessage: '+16% higher digital engagement!' }
+  ],
+  'email-lifecycle-marketing': [
+    { label: 'SPAM', defeatMessage: '+3.5% marketing ROI via matched-pair testing!' }
+  ],
+  'retention-churn-analytics': [
+    { label: 'VOLATILITY', defeatMessage: 'Built trader lifecycle models during GameStop!' }
   ]
 };
 
 // Hidden achievements for question blocks - full meaningful messages
 const HIDDEN_ACHIEVEMENTS: Record<string, string> = {
   'enterprise-bi': 'Personally liaised with CEO & VP Marketing for board reporting!',
-  'genai-delivery': 'Established enterprise AI Governance Board!',
+  'genai-delivery': 'Built RAG pipeline + FastAPI serving layer for 1,000+ employees!',
   'leadership': 'Led 14 FTE Kaizen team across 6 countries!',
-  'advanced-analytics': 'Developed Apple AirPods competitive strategy with R&D!'
+  'advanced-analytics': 'Developed Apple AirPods competitive strategy with R&D!',
+  'propensity-segmentation': 'Drove +16% MoM growth in retirement acquisitions at JP Morgan!',
+  'next-best-action': 'Built Next-Best-Action engine for wealth advisors at JP Morgan!',
+  'retention-churn-analytics': 'Managed trader retention during GameStop volatility at JP Morgan!'
 };
 
 // Concise content for adaptive billboards - each line fits without overflow
@@ -63,19 +86,19 @@ const SECTION_FULL_CONTENT: Record<string, { title: string; content: string }> =
   },
   'data-engineering': { 
     title: 'DATA ENGINEERING',
-    content: '-75% FTE time\n-35% cycle time\nAutomated pipelines'
+    content: 'Medallion B/S/G\nMTTR <30min\nAnomaly Detection'
   },
   'data-governance': { 
     title: 'DATA GOVERNANCE',
-    content: '99.9% reliability\n20 jurisdictions\nGDPR/PIPL/LGPD'
+    content: '15+ KRIs tracked\n99.9% reliability\nAnomaly Detection'
   },
   'genai-delivery': { 
     title: 'GENAI DELIVERY',
-    content: '-90% hallucination\nAI Governance\nRAG architecture'
+    content: '-90% hallucination\nRAG + FastAPI\nRevenue Analytics'
   },
   'data-apps': { 
     title: 'DATA APPS',
-    content: 'Multi-source\nReal-time\nSelf-service'
+    content: 'HR Org Chart AI\nFastAPI backend\nOrg Intelligence'
   },
   'leadership': { 
     title: 'LEADERSHIP',
@@ -84,6 +107,30 @@ const SECTION_FULL_CONTENT: Record<string, { title: string; content: string }> =
   'advanced-analytics': { 
     title: 'ANALYTICS',
     content: '-15% cost\nPredictive models\nR&D collab'
+  },
+  'propensity-segmentation': {
+    title: 'SEGMENTATION',
+    content: '+16% MoM growth\nRFM models\nRetirement acq.'
+  },
+  'experimentation-uplift': {
+    title: 'EXPERIMENTATION',
+    content: 'A/B + Uplift\nCAC optimized\nBudget allocation'
+  },
+  'next-best-action': {
+    title: 'NEXT-BEST-ACTION',
+    content: '+2.5% interactions\n-8% drop-off\nRM routing'
+  },
+  'digital-funnel-optimization': {
+    title: 'DIGITAL FUNNEL',
+    content: '+16% engagement\nE2E journeys\nConversion opt.'
+  },
+  'email-lifecycle-marketing': {
+    title: 'EMAIL MARKETING',
+    content: '+3.5% ROI uplift\nMatched-pair\nLifecycle'
+  },
+  'retention-churn-analytics': {
+    title: 'RETENTION',
+    content: 'DAU/WAU/MAU\nBCG portfolio\nGameStop \'21'
   }
 };
 
@@ -117,6 +164,7 @@ export class LevelGenerator {
   static generate(content: PortfolioContent): LevelData {
     const entities: Entity[] = [];
     const bookmarks: Record<string, number> = {};
+    const zoneMarkers: { label: string; x: number }[] = [];
     let totalAchievements = 0;
     let totalFlags = 0;
 
@@ -146,7 +194,7 @@ export class LevelGenerator {
       x: cursorX, y: this.groundY - 120, w: 200, h: 80,
       vx: 0, vy: 0, color: '#1a1a2e',
       label: 'SMEET PATEL',
-      content: 'Data & AI Leader\nBerlin, Germany\n20 Countries',
+      content: 'Data Eng & GenAI\nIIT Madras Cert.\nBerlin, Germany',
       active: true, solid: false, gravity: false
     });
 
@@ -154,7 +202,7 @@ export class LevelGenerator {
     entities.push({
       id: 'coin_years',
       type: 'coin',
-      x: cursorX + 250, y: this.groundY - 80, w: 36, h: 36,
+      x: cursorX + 210, y: this.groundY - 80, w: 36, h: 36,
       vx: 0, vy: 0, color: '#FFD700',
       label: '14+',
       metricValue: '14+',
@@ -164,12 +212,13 @@ export class LevelGenerator {
     });
     totalAchievements++;
 
-    cursorX += 400; // More spacing for readability
+    cursorX += 250;
 
     // ================================================================
     // COMPANY HEADER: SONOVA
     // ================================================================
     bookmarks['experience'] = cursorX;
+    zoneMarkers.push({ label: 'SONOVA', x: cursorX });
 
     entities.push({
       id: 'sign_company',
@@ -181,7 +230,7 @@ export class LevelGenerator {
       active: true, solid: false, gravity: false
     });
 
-    cursorX += 350; // More spacing between company and sections
+    cursorX += 210;
 
     // ================================================================
     // GENERATE ZONES FROM TOP EXPERIENCE SECTIONS (shorter game)
@@ -203,6 +252,47 @@ export class LevelGenerator {
     });
 
     // ================================================================
+    // COMPANY HEADER: JP MORGAN & CHASE
+    // ================================================================
+    bookmarks['jpmorgan'] = cursorX;
+    zoneMarkers.push({ label: 'JP MORGAN', x: cursorX });
+
+    entities.push({
+      id: 'sign_jpmorgan',
+      type: 'billboard',
+      x: cursorX, y: this.groundY - 120, w: 200, h: 80,
+      vx: 0, vy: 0, color: '#1a1a2e',
+      label: 'JP MORGAN & CHASE',
+      content: 'Jun 2019 - Mar 2022\nRetail & Wealth Banking\nCustomer & Digital Analytics',
+      active: true, solid: false, gravity: false
+    });
+
+    cursorX += 210;
+
+    // ================================================================
+    // GENERATE ZONES FROM JP MORGAN EXPERIENCE SECTIONS (top 3)
+    // ================================================================
+    const jpmorganData = (experienceData as ExperienceData[])[1];
+    if (jpmorganData) {
+      const jpmTopSections = jpmorganData.sections.slice(0, 3);
+      jpmTopSections.forEach((section, sectionIndex) => {
+        const zoneEntities = this.generateSectionZone(
+          section,
+          cursorX,
+          sectionIndex + topSections.length,
+          jpmorganData.techStack
+        );
+        
+        entities.push(...zoneEntities.entities);
+        totalAchievements += zoneEntities.achievementCount;
+        totalFlags += zoneEntities.flagCount;
+        
+        bookmarks[section.id] = cursorX;
+        cursorX += zoneEntities.width;
+      });
+    }
+
+    // ================================================================
     // SKIP TECH PLATFORMS - they were causing visual issues
     // ================================================================
     bookmarks['skills'] = cursorX;
@@ -213,6 +303,8 @@ export class LevelGenerator {
     //        pipeline failures, compliance risks, data silos, manual processes
     // ================================================================
     bookmarks['contact'] = cursorX;
+
+    zoneMarkers.push({ label: 'BOSS', x: cursorX });
 
     // Story Billboard - Sets up the final challenge narrative
     entities.push({
@@ -225,7 +317,7 @@ export class LevelGenerator {
       active: true, solid: false, gravity: false
     });
 
-    cursorX += 300;
+    cursorX += 200;
 
     // Governance Hammer Power-up - at ground level so Mario can walk into it
     entities.push({
@@ -238,7 +330,7 @@ export class LevelGenerator {
       active: true, solid: false, gravity: false, textureId: 'hammer'
     });
 
-    cursorX += 200;
+    cursorX += 140;
 
     // Final Boss: Data Chaos - Represents all enterprise data challenges
     entities.push({
@@ -253,7 +345,7 @@ export class LevelGenerator {
     });
     totalAchievements++;
 
-    cursorX += 180;
+    cursorX += 120;
 
     // Victory Castle - The goal achieved
     entities.push({
@@ -263,7 +355,7 @@ export class LevelGenerator {
       active: true, solid: true, gravity: false, textureId: 'castle'
     });
 
-    cursorX += 180;
+    cursorX += 160;
 
     // Victory Billboard - What was achieved by defeating Data Chaos
     entities.push({
@@ -276,7 +368,7 @@ export class LevelGenerator {
       active: true, solid: false, gravity: false
     });
 
-    cursorX += 250; // End buffer
+    cursorX += 150; // End buffer
 
     // --- CONTINUOUS GROUND (generated AFTER knowing final level length) ---
     const levelLength = cursorX + 100;
@@ -305,7 +397,7 @@ export class LevelGenerator {
       });
     }
 
-    return { entities, bookmarks, totalAchievements, totalFlags };
+    return { entities, bookmarks, totalAchievements, totalFlags, levelLength, zoneMarkers };
   }
 
   private static generateSectionZone(
@@ -335,7 +427,7 @@ export class LevelGenerator {
       active: true, solid: false, gravity: false
     });
 
-    cursorX += 280; // Space after billboard
+    cursorX += 210; // Space after billboard (must clear 200px billboard width)
 
     // Generate metric coins from section metrics (max 2) - wider spacing
     if (section.content.metrics) {
@@ -345,7 +437,7 @@ export class LevelGenerator {
         entities.push({
           id: `coin_${section.id}_${i}`,
           type: 'coin',
-          x: cursorX + (i * 100), y: this.groundY - 70 - (i % 2) * 30, w: 32, h: 32,
+          x: cursorX + (i * 70), y: this.groundY - 70 - (i % 2) * 30, w: 32, h: 32,
           vx: 0, vy: 0, color: '#FFD700',
           label: metric.value,
           metricValue: metric.value,
@@ -356,7 +448,7 @@ export class LevelGenerator {
         });
         achievementCount++;
       });
-      cursorX += Math.min(section.content.metrics.length, 2) * 100 + 60;
+      cursorX += Math.min(section.content.metrics.length, 2) * 70 + 40;
     }
 
     // Generate section-specific challenges (goombas) - max 1 per section
@@ -373,7 +465,7 @@ export class LevelGenerator {
         sectionId: section.id,
         active: true, solid: false, gravity: false, textureId: 'goomba'
       });
-      cursorX += 120; // More space after goomba
+      cursorX += 70;
     }
 
     // Add question block with hidden achievement if available
@@ -389,13 +481,13 @@ export class LevelGenerator {
         sectionId: section.id,
         active: true, solid: true, gravity: false, textureId: 'question'
       });
-      cursorX += 60;
+      cursorX += 70;
       achievementCount++;
     }
 
-    // Special: Add jurisdiction flags in governance section (reduced to 6)
+    // Special: Add jurisdiction flags in governance section (reduced to 4)
     if (section.id === 'data-governance') {
-      const topFlags = JURISDICTION_FLAGS.slice(0, 6);
+      const topFlags = JURISDICTION_FLAGS.slice(0, 4);
       topFlags.forEach((flag, i) => {
         entities.push({
           id: `flag_${flag.country}`,
@@ -410,7 +502,7 @@ export class LevelGenerator {
         });
         flagCount++;
       });
-      cursorX += topFlags.length * 35 + 30;
+      cursorX += topFlags.length * 35 + 20;
     }
 
     // Add power-up mushroom for first section only
@@ -428,16 +520,18 @@ export class LevelGenerator {
       cursorX += 50;
     }
 
-    // Small pipe transition
+    cursorX += 50; // Buffer before pipe
+
+    // Pipe transition — solid so player must jump over (zone gate)
     entities.push({
       id: `pipe_${section.id}`,
-      type: 'scenery',
+      type: 'ground',
       x: cursorX, y: this.groundY - 70, w: 50, h: 70,
       vx: 0, vy: 0, color: '#00AA00',
-      active: true, solid: false, gravity: false, textureId: 'pipe'
+      active: true, solid: true, gravity: false, textureId: 'pipe'
     });
 
-    cursorX += 70;
+    cursorX += 50;
 
     return {
       entities,

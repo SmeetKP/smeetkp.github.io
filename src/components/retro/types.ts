@@ -53,6 +53,12 @@ export interface GameState {
   metricsCollected: string[];
   challengesOvercome: string[];
   hammerSwingTimer: number;
+  levelLength: number;
+  zoneMarkers: { label: string; x: number }[];
+  messageQueue: string[];
+  currentZone: string;
+  zoneOverlayTimer: number;
+  zoneOverlayText: string;
 }
 
 export interface ExperienceSection {

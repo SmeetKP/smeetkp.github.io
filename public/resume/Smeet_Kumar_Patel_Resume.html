@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Resume of Smeet Kumar Patel — Manager, Data Engineering, Analytics & GenAI Implementation. 14+ years leading global data transformation across MedTech, Retail Banking, and Wealth Management. IIT Madras certified.">
+  <title>Smeet Kumar Patel — Resume</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --navy: #0f172a;
+      --navy-mid: #1e293b;
+      --accent: #2563eb;
+      --accent-bg: #eff6ff;
+      --accent-border: #bfdbfe;
+      --text: #1e293b;
+      --text-mid: #334155;
+      --text-light: #64748b;
+      --bg-sidebar: #0f172a;
+      --bg-sidebar-text: #e2e8f0;
+      --bg-sidebar-muted: #94a3b8;
+      --bg-sidebar-accent: #60a5fa;
+      --white: #ffffff;
+    }
+
+    @page { size: A4; margin: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 8.5pt;
+      line-height: 1.4;
+      color: var(--text);
+      background: #94a3b8;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* ===== PAGE ===== */
+    .page {
+      width: 210mm;
+      height: 297mm;
+      margin: 8mm auto;
+      background: var(--white);
+      display: flex;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+      page-break-after: always;
+      position: relative;
+    }
+
+    .page:first-child::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 68mm;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), #7c3aed);
+      z-index: 1;
+    }
+
+    @media print {
+      body { background: #fff; }
+      .page { margin: 0; box-shadow: none; overflow: visible; }
+      .page + .page { page-break-before: always; }
+      .main { overflow: visible; }
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: 68mm;
+      background: var(--bg-sidebar);
+      color: var(--bg-sidebar-text);
+      padding: 14mm 5mm 10mm 6mm;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .sidebar h2 {
+      font-size: 7pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--bg-sidebar-accent);
+      margin-bottom: 4px;
+      padding-bottom: 3px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .sidebar .contact-item {
+      font-size: 7.5pt;
+      line-height: 1.5;
+      color: var(--bg-sidebar-text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sidebar .contact-item .ico {
+      width: 13px;
+      flex-shrink: 0;
+      font-size: 7pt;
+      color: var(--bg-sidebar-accent);
+      text-align: center;
+    }
+
+    .sidebar .contact-item a {
+      color: var(--bg-sidebar-accent);
+      text-decoration: none;
+    }
+
+    .sidebar .skill-category {
+      margin-bottom: 5px;
+    }
+
+    .sidebar .skill-cat-name {
+      font-size: 7.5pt;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 3px;
+    }
+
+    .sidebar .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px 3px;
+    }
+
+    .sidebar .skill-tag {
+      font-size: 6.5pt;
+      padding: 1.5px 5px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 3px;
+      color: var(--bg-sidebar-muted);
+      line-height: 1.5;
+    }
+
+    .sidebar .skill-tag.expert {
+      background: rgba(96,165,250,0.15);
+      border-color: rgba(96,165,250,0.3);
+      color: var(--bg-sidebar-accent);
+    }
+
+    .sidebar .cert-card {
+      background: rgba(217,119,6,0.12);
+      border: 1px solid rgba(217,119,6,0.25);
+      border-radius: 5px;
+      padding: 6px 7px;
+    }
+
+    .sidebar .cert-card .cert-name {
+      font-size: 7.5pt;
+      font-weight: 700;
+      color: #fbbf24;
+      line-height: 1.3;
+    }
+
+    .sidebar .cert-card .cert-inst {
+      font-size: 6.5pt;
+      color: var(--bg-sidebar-muted);
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    .sidebar .lang-item {
+      font-size: 7.5pt;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2px;
+    }
+
+    .sidebar .lang-level {
+      display: flex;
+      gap: 2px;
+    }
+
+    .sidebar .lang-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .sidebar .lang-dot.filled {
+      background: var(--bg-sidebar-accent);
+    }
+
+    .sidebar .info-item {
+      font-size: 7pt;
+      color: var(--bg-sidebar-muted);
+      line-height: 1.5;
+    }
+
+    .sidebar .info-item strong {
+      color: var(--bg-sidebar-text);
+      font-weight: 600;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main {
+      flex: 1;
+      padding: 14mm 14mm 10mm 12mm;
+      overflow: hidden;
+    }
+
+    .main-header {
+      margin-bottom: 8px;
+    }
+
+    .main-header h1 {
+      font-size: 20pt;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.8px;
+      line-height: 1.1;
+    }
+
+    .main-header .role-title {
+      font-size: 9.5pt;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: 3px;
+      margin-bottom: 5px;
+    }
+
+    .main-header .summary {
+      font-size: 8pt;
+      color: var(--text-mid);
+      line-height: 1.5;
+    }
+
+    .main-header .summary b {
+      color: var(--navy);
+      font-weight: 600;
+    }
+
+    /* Metrics Strip */
+    .metrics-strip {
+      display: flex;
+      gap: 0;
+      margin-bottom: 8px;
+      border-radius: 5px;
+      overflow: hidden;
+      border: 1px solid var(--accent-border);
+    }
+
+    .metrics-strip .m-item {
+      flex: 1;
+      text-align: center;
+      padding: 4px 2px;
+      background: linear-gradient(180deg, var(--accent-bg) 0%, #dbeafe 100%);
+      border-right: 1px solid var(--accent-border);
+    }
+
+    .metrics-strip .m-item:last-child { border-right: none; }
+
+    .metrics-strip .m-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11pt;
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+      line-height: 1.2;
+    }
+
+    .metrics-strip .m-lbl {
+      font-size: 5.5pt;
+      font-weight: 600;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Section */
+    .section { margin-bottom: 9px; page-break-inside: avoid; }
+
+    .section-title {
+      font-size: 8pt;
+      font-weight: 700;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding-bottom: 2px;
+      margin-bottom: 5px;
+      border-bottom: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 3px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* Experience */
+    .exp-block { margin-bottom: 9px; page-break-inside: avoid; }
+
+    .exp-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .exp-company {
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .exp-period {
+      font-size: 7pt;
+      font-weight: 500;
+      color: var(--text-light);
+      white-space: nowrap;
+    }
+
+    .exp-role {
+      font-size: 8pt;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 2px;
+    }
+
+    .exp-sub {
+      font-size: 7.5pt;
+      font-weight: 700;
+      color: var(--navy-mid);
+      margin-top: 3px;
+      margin-bottom: 1px;
+      padding-left: 8px;
+      border-left: 2px solid var(--accent-border);
+    }
+
+    /* Bullets */
+    ul.bl { list-style: none; padding: 0; }
+
+    ul.bl li {
+      position: relative;
+      padding-left: 10px;
+      margin-bottom: 2.5px;
+      font-size: 7.8pt;
+      line-height: 1.4;
+      color: var(--text-mid);
+    }
+
+    ul.bl li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 5px;
+      width: 4px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    ul.bl li b { color: var(--navy); font-weight: 600; }
+
+    .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 7.8pt;
+    }
+
+    /* Education */
+    .edu-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 7.8pt;
+      margin-bottom: 2px;
+    }
+
+    .edu-row .edu-name { font-weight: 700; color: var(--navy); }
+    .edu-row .edu-period { font-size: 7pt; color: var(--text-light); }
+    .edu-detail { font-size: 7.5pt; color: var(--text-mid); margin-bottom: 4px; }
+
+    /* Key Projects grid */
+    .proj-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 12px;
+    }
+
+    .proj-item {
+      font-size: 7.5pt;
+      line-height: 1.35;
+      padding: 3px 0;
+    }
+
+    .proj-name { font-weight: 700; color: var(--navy); }
+    .proj-metric { font-family: 'JetBrains Mono', monospace; font-size: 7pt; color: var(--accent); font-weight: 600; }
+    .proj-desc { color: var(--text-light); font-size: 7pt; }
+  </style>
+</head>
+<body>
+
+<!-- ======================== PAGE 1 ======================== -->
+<div class="page">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" role="complementary">
+
+    <!-- Contact -->
+    <div>
+      <h2>Contact</h2>
+      <div class="contact-item"><span class="ico">#</span> +91 9967775258</div>
+      <div class="contact-item"><span class="ico">|</span> Berlin / Mumbai</div>
+      <div class="contact-item"><span class="ico">@</span> <a href="mailto:smeet3103@gmail.com">smeet3103@gmail.com</a></div>
+      <div class="contact-item"><span class="ico">in</span> <a href="https://linkedin.com/in/smeetkumarpatel">linkedin.com/in/smeetkumarpatel</a></div>
+      <div class="contact-item"><span class="ico">//</span> <a href="https://smeetkp.github.io">smeetkp.github.io</a></div>
+    </div>
+
+    <!-- Certification -->
+    <div>
+      <h2>Certification</h2>
+      <div class="cert-card">
+        <div class="cert-name">Advanced Certification in Data Science & AI</div>
+        <div class="cert-inst">IIT Madras — Centre for Outreach & Digital Education (CODE)</div>
+        <div class="cert-inst">Intellipaat | Feb 2022 – Sep 2022</div>
+        <div class="cert-inst" style="margin-top:3px; font-size:6pt; color:#fbbf24;">Machine Learning, Deep Learning, NLP, Statistical Modeling, AI Applications</div>
+      </div>
+    </div>
+
+    <!-- Technical Skills -->
+    <div>
+      <h2>Technical Skills</h2>
+
+      <div class="skill-category">
+        <div class="skill-cat-name">Data Engineering & BI</div>
+        <div class="skill-tags">
+          <span class="skill-tag expert">Databricks</span>
+          <span class="skill-tag expert">Power BI</span>
+          <span class="skill-tag">Tableau</span>
+          <span class="skill-tag expert">SQL</span>
+          <span class="skill-tag">SAP Analytics Cloud</span>
+          <span class="skill-tag">DBT</span>
+          <span class="skill-tag">Fivetran</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <div class="skill-cat-name">GenAI & ML</div>
+        <div class="skill-tags">
+          <span class="skill-tag expert">RAG</span>
+          <span class="skill-tag expert">LangChain</span>
+          <span class="skill-tag">Pinecone</span>
+          <span class="skill-tag">Milvus</span>
+          <span class="skill-tag expert">Python</span>
+          <span class="skill-tag">Scikit-learn</span>
+          <span class="skill-tag">XGBoost</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <div class="skill-cat-name">Cloud & Platform</div>
+        <div class="skill-tags">
+          <span class="skill-tag expert">Azure</span>
+          <span class="skill-tag">FastAPI</span>
+          <span class="skill-tag">React.js</span>
+          <span class="skill-tag">Spark</span>
+          <span class="skill-tag">Hadoop</span>
+          <span class="skill-tag">CI/CD</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <div class="skill-cat-name">Analytics & Experimentation</div>
+        <div class="skill-tags">
+          <span class="skill-tag expert">A/B Testing</span>
+          <span class="skill-tag">Uplift Modeling</span>
+          <span class="skill-tag expert">RFM</span>
+          <span class="skill-tag">Propensity</span>
+          <span class="skill-tag">SHAP</span>
+          <span class="skill-tag">Causal Inference</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <div class="skill-cat-name">Methodologies</div>
+        <div class="skill-tags">
+          <span class="skill-tag expert">Agile/Scrum</span>
+          <span class="skill-tag expert">Lean Six Sigma</span>
+          <span class="skill-tag">Kaizen</span>
+          <span class="skill-tag expert">DataOps</span>
+          <span class="skill-tag">OKR Alignment</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Languages -->
+    <div>
+      <h2>Languages</h2>
+      <div class="lang-item">
+        <span>English <small style="color:var(--bg-sidebar-muted);font-size:6pt;">(Native)</small></span>
+        <div class="lang-level" aria-label="English: Native proficiency">
+          <span class="lang-dot filled"></span><span class="lang-dot filled"></span><span class="lang-dot filled"></span><span class="lang-dot filled"></span><span class="lang-dot filled"></span>
+        </div>
+      </div>
+      <div class="lang-item">
+        <span>Hindi <small style="color:var(--bg-sidebar-muted);font-size:6pt;">(Native)</small></span>
+        <div class="lang-level" aria-label="Hindi: Native proficiency">
+          <span class="lang-dot filled"></span><span class="lang-dot filled"></span><span class="lang-dot filled"></span><span class="lang-dot filled"></span><span class="lang-dot filled"></span>
+        </div>
+      </div>
+      <div class="lang-item">
+        <span>German <small style="color:var(--bg-sidebar-muted);font-size:6pt;">(A2)</small></span>
+        <div class="lang-level" aria-label="German: A2 elementary proficiency">
+          <span class="lang-dot filled"></span><span class="lang-dot filled"></span><span class="lang-dot"></span><span class="lang-dot"></span><span class="lang-dot"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Work Auth -->
+    <div>
+      <h2>Work Authorization</h2>
+      <div class="info-item"><strong>EU Blue Card</strong> Holder</div>
+      <div class="info-item"><strong>US B1 Visa</strong></div>
+    </div>
+
+    <!-- Domain -->
+    <div>
+      <h2>Domain Expertise</h2>
+      <div class="info-item">MedTech / Audiological Care</div>
+      <div class="info-item">Retail & Wealth Banking</div>
+      <div class="info-item">Customer & Digital Analytics</div>
+      <div class="info-item">Marketing Science</div>
+    </div>
+
+  </div><!-- end sidebar -->
+
+  <!-- MAIN CONTENT -->
+  <div class="main" role="main">
+
+    <div class="main-header">
+      <h1>Smeet Kumar Patel</h1>
+      <div class="role-title">Manager, Data Engineering, Analytics & GenAI Implementation</div>
+      <p class="summary">
+        <b>14+ years</b> leading global data transformation across MedTech, Retail Banking, and Wealth Management. Currently driving enterprise analytics, data engineering, and GenAI delivery across <b>20 countries</b> at Sonova Group — <b>21 dashboards</b>, <b>99.9% pipeline reliability</b>, <b>90% hallucination reduction</b> at scale. <b>IIT Madras</b> certified in Advanced Data Science & AI.
+      </p>
+    </div>
+
+    <div class="metrics-strip">
+      <div class="m-item"><span class="m-val">20</span><span class="m-lbl">Countries</span></div>
+      <div class="m-item"><span class="m-val">175</span><span class="m-lbl">Users</span></div>
+      <div class="m-item"><span class="m-val">21</span><span class="m-lbl">Dashboards</span></div>
+      <div class="m-item"><span class="m-val">90%</span><span class="m-lbl">GenAI Accuracy</span></div>
+      <div class="m-item"><span class="m-val">99.9%</span><span class="m-lbl">Reliability</span></div>
+      <div class="m-item"><span class="m-val">75%</span><span class="m-lbl">Automation</span></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Experience</div>
+
+      <div class="exp-block">
+        <div class="exp-top">
+          <span class="exp-company">Sonova Group</span>
+          <span class="exp-period">May 2023 – Present</span>
+        </div>
+        <div class="exp-role">Manager, Data Engineering, Analytics & GenAI Implementation &mdash; Berlin, Germany</div>
+
+        <div class="exp-sub">Enterprise BI, KPI Standardization & Executive Reporting</div>
+        <ul class="bl">
+          <li>Delivered <b>21 executive dashboards</b> across Sales, Operations, Marketing & HR — drove <b class="num">+2.1%</b> QoQ sales increase and <b class="num">60%</b> engagement boost across <b class="num">1,800</b> users</li>
+          <li>Spearheaded enterprise BI transformation across <b>20 countries</b> with <b>8 integrated data sources</b>, standardizing KPI definitions and OKR-aligned executive reporting</li>
+          <li>Partnered with <b>CEO & VP Marketing</b> on board-level KPI suite; linked <b class="num">5</b> P&L levers to dashboards, contributing to EBITDA expansion</li>
+        </ul>
+
+        <div class="exp-sub">Data Engineering, Lakehouse Architecture & Reliability</div>
+        <ul class="bl">
+          <li>Architected <b>Medallion lakehouse</b> (Bronze/Silver/Gold) on Databricks with progressive quality gates — <b class="num">MTTR &lt;30 min</b>, <b class="num">MTTD &lt;15 min</b></li>
+          <li>Automated data collection and reporting pipelines: <b class="num">75%</b> FTE time reduction, <b class="num">35%</b> faster reporting cycles, <b class="num">~30%</b> faster sales forecasting</li>
+          <li>Implemented <b>Unity Catalog</b> governance achieving <b class="num">99.9%</b> pipeline reliability and <b class="num">30%</b> lower data downtime; tracked <b class="num">15+</b> KRIs with anomaly detection</li>
+        </ul>
+
+        <div class="exp-sub">GenAI Delivery, RAG Architecture & AI Governance</div>
+        <ul class="bl">
+          <li>Designed end-to-end <b>RAG pipeline</b> (ingestion, chunking, embedding, vector store, LangChain) — <b class="num">90%</b> hallucination reduction, scaled to <b class="num">1,000+</b> employees</li>
+          <li>Built <b>FastAPI serving layer</b> for GenAI products — low-latency inference, analytics queries, and batch processing; improved service enablement by <b class="num">~20%</b></li>
+          <li>Instituted <b>AI Governance Board</b> with PII guardrails; ensured compliance with GDPR, EU AI Act, and 18 additional jurisdictional regulations</li>
+          <li>Shipped <b>AI-powered HR Org Chart</b> (React.js + FastAPI) serving <b class="num">200+</b> managers — org network analysis, succession planning, restructuring simulation</li>
+        </ul>
+
+        <div class="exp-sub">Leadership, Optimization & Continuous Improvement</div>
+        <ul class="bl">
+          <li>Led <b class="num">14 FTE</b> cross-functional Kaizen team across <b>6 countries</b> — implemented Agile DataOps, improving <b class="num">retention by 15%</b> and <b class="num">sprint velocity by 20%</b></li>
+          <li>Deployed workforce optimization models: <b class="num">15%</b> cost reduction, <b class="num">60%</b> resource productivity increase, <b class="num">6%</b> utilization improvement</li>
+          <li>Surfaced revenue blockers using <b>SHAP values</b> — enabled <b class="num">3</b> targeted commercial interventions across Sales & Marketing, directly informing quarterly planning</li>
+          <li>Co-developed competitive strategy with R&D using <b>Porter's Five Forces</b> — improved search ads execution across <b class="num">3</b> regions (US, Canada, EU)</li>
+        </ul>
+      </div>
+
+      <div class="exp-block">
+        <div class="exp-top">
+          <span class="exp-company">JPMorgan Chase</span>
+          <span class="exp-period">Jun 2019 – Mar 2022</span>
+        </div>
+        <div class="exp-role">Data Science Associate — Customer & Digital Analytics (Retail / Wealth Banking) &mdash; Mumbai, India</div>
+        <ul class="bl">
+          <li>Constructed <b>RFM/propensity models</b> for high-intent cohort targeting — drove <b class="num">+16%</b> MoM growth in retirement account acquisitions</li>
+          <li>Engineered <b>Next-Best-Action routing engine</b> for wealth advisors — improved weekly client interactions by <b class="num">+2.5%</b> and reduced drop-off by <b class="num">-8%</b></li>
+          <li>Launched enterprise <b>A/B testing program</b> with incrementality and uplift readouts — reduced customer acquisition cost by <b class="num">12%</b> through rigorous budget allocation</li>
+          <li>Refined email campaign performance via <b>matched-pair testing</b> — delivered <b class="num">+3.5%</b> marketing budget ROI uplift during trading feature launch</li>
+          <li>Analyzed end-to-end digital journeys to pinpoint funnel friction — achieved <b class="num">+16%</b> higher digital engagement</li>
+          <li>Created <b>trader lifecycle models</b> (DAU/WAU/MAU) with BCG-style portfolio view — flagged <b class="num">15%</b> attrition risk during GameStop volatility (2021)</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div><!-- end main -->
+</div><!-- end page 1 -->
+
+
+<!-- ======================== PAGE 2 ======================== -->
+<div class="page">
+
+  <!-- SIDEBAR PAGE 2 -->
+  <div class="sidebar" role="complementary" style="padding-top:14mm;">
+
+    <!-- Impact at a Glance -->
+    <div>
+      <h2>Impact at a Glance</h2>
+      <div class="info-item" style="margin-bottom:5px;"><strong>+2.1%</strong> QoQ sales increase</div>
+      <div class="info-item" style="margin-bottom:5px;"><strong>90%</strong> hallucination reduction</div>
+      <div class="info-item" style="margin-bottom:5px;"><strong>99.9%</strong> pipeline reliability</div>
+      <div class="info-item" style="margin-bottom:5px;"><strong>75%</strong> FTE time reduction</div>
+      <div class="info-item" style="margin-bottom:5px;"><strong>+16%</strong> MoM acquisition growth</div>
+      <div class="info-item" style="margin-bottom:5px;"><strong>13%</strong> revenue boost (Felmo)</div>
+    </div>
+
+    <!-- Regulatory -->
+    <div>
+      <h2>Regulatory Expertise</h2>
+      <div class="info-item" style="line-height:1.6;">
+        GDPR (EU), UK DPA, BDSG, LGPD, CCPA/CPRA, PIPEDA, Privacy Act (AU/NZ), APPI, PIPL, EU AI Act
+      </div>
+      <div class="info-item" style="margin-top:3px;"><strong>20 jurisdictions</strong> covered</div>
+    </div>
+
+    <!-- Portfolio -->
+    <div>
+      <h2>Portfolio</h2>
+      <div class="contact-item"><span class="ico">//</span> <a href="https://smeetkp.github.io">smeetkp.github.io</a></div>
+      <div class="info-item" style="margin-top:2px;">Interactive portfolio with Professional, Gamified & Retro modes</div>
+    </div>
+
+    <!-- Interests -->
+    <div>
+      <h2>Interests</h2>
+      <div class="info-item">Data Visualization, Open Source, AI Ethics, Competitive Strategy, Cross-Cultural Leadership</div>
+    </div>
+
+  </div><!-- end sidebar page 2 -->
+
+  <!-- MAIN CONTENT PAGE 2 -->
+  <div class="main" role="main" style="padding-top:14mm;">
+
+    <!-- Experience Continued -->
+    <div class="section">
+      <div class="section-title">Experience (continued)</div>
+
+      <div class="exp-block">
+        <div class="exp-top">
+          <span class="exp-company">Felmo GmbH</span>
+          <span class="exp-period">Apr 2022 – Mar 2023</span>
+        </div>
+        <div class="exp-role">Customer Growth & Retention Lead &mdash; Berlin, Germany</div>
+        <ul class="bl">
+          <li>Drove <b class="num">13%</b> revenue boost via RFM analysis and customer segmentation strategies for veterinary telehealth platform</li>
+          <li>Established A/B testing infrastructure enabling systematic experimentation — reduced campaign iteration time from <b class="num">3 weeks to 4 days</b></li>
+          <li>Mapped end-to-end customer journeys across <b class="num">12</b> touchpoints, identifying <b class="num">3</b> high-friction drop-off points that informed product roadmap priorities</li>
+        </ul>
+      </div>
+
+      <div class="exp-block">
+        <div class="exp-top">
+          <span class="exp-company">Accenture | Mastek | TCS</span>
+          <span class="exp-period">2011 – 2019</span>
+        </div>
+        <div class="exp-role">Data Analytics & BI Roles — Progressive Growth &mdash; India / Global</div>
+        <ul class="bl">
+          <li>Advanced through <b>3 major consultancies</b> over 8+ years, building deep expertise in data analytics, business intelligence, and enterprise reporting</li>
+          <li>Owned end-to-end analytics delivery for <b class="num">10+</b> global clients across <b>BFSI, Healthcare, and Technology</b> verticals — reporting frameworks, ETL pipelines, and executive dashboards</li>
+          <li>Progressed from individual contributor to team lead, managing cross-functional delivery across onshore/offshore models in <b>4 countries</b></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Education</div>
+      <div class="edu-row">
+        <span class="edu-name">Bachelor of Technology (B.Tech) — Mechanical Engineering</span>
+        <span class="edu-period">2007 – 2011</span>
+      </div>
+      <div class="edu-detail">CGPA: <b class="num">7.6 / 10</b></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Certification</div>
+      <div class="edu-row">
+        <span class="edu-name">Advanced Certification in Data Science & AI</span>
+        <span class="edu-period">Feb 2022 – Sep 2022</span>
+      </div>
+      <div class="edu-detail">IIT Madras — Centre for Outreach & Digital Education (CODE) | Intellipaat</div>
+      <div class="edu-detail" style="color:var(--text-light); font-size:7pt;">Machine Learning, Deep Learning, NLP, Statistical Modeling, AI Applications, Python</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Key Projects & Deliverables</div>
+      <div class="proj-grid">
+        <div class="proj-item">
+          <span class="proj-name">Global BI Transformation</span><br>
+          <span class="proj-metric">+2.1% QoQ sales | 21 dashboards</span><br>
+          <span class="proj-desc">Standardized KPIs across 20 countries; 53% daily active usage</span>
+        </div>
+        <div class="proj-item">
+          <span class="proj-name">Medallion Lakehouse Pipeline</span><br>
+          <span class="proj-metric">MTTR &lt;30m | MTTD &lt;15m</span><br>
+          <span class="proj-desc">Bronze/Silver/Gold architecture on Databricks; anomaly detection</span>
+        </div>
+        <div class="proj-item">
+          <span class="proj-name">GenAI Chatbot Ecosystem</span><br>
+          <span class="proj-metric">90% hallucination reduction</span><br>
+          <span class="proj-desc">RAG pipeline + FastAPI serving; scaled to 1,000+ employees</span>
+        </div>
+        <div class="proj-item">
+          <span class="proj-name">AI-Powered HR Org Chart</span><br>
+          <span class="proj-metric">React.js + FastAPI</span><br>
+          <span class="proj-desc">Org network analysis, succession planning, restructuring simulation</span>
+        </div>
+        <div class="proj-item">
+          <span class="proj-name">Segmentation & Next-Best-Action</span><br>
+          <span class="proj-metric">+16% MoM | +2.5% interactions</span><br>
+          <span class="proj-desc">RFM/propensity models + Next-Best-Action engine at JPMorgan Chase</span>
+        </div>
+        <div class="proj-item">
+          <span class="proj-name">Experimentation Platform</span><br>
+          <span class="proj-metric">+3.5% ROI uplift</span><br>
+          <span class="proj-desc">A/B + uplift + matched-pair testing for marketing optimization</span>
+        </div>
+        <div class="proj-item">
+          <span class="proj-name">Revenue Driver Analytics</span><br>
+          <span class="proj-metric">SHAP-based analysis</span><br>
+          <span class="proj-desc">Automated identification of revenue blockers and growth drivers</span>
+        </div>
+        <div class="proj-item">
+          <span class="proj-name">Retention & Churn Analytics</span><br>
+          <span class="proj-metric">BCG portfolio view</span><br>
+          <span class="proj-desc">Trader lifecycle models during GameStop volatility (2021)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Leadership & Governance</div>
+      <ul class="bl">
+        <li><b>Executive engagement:</b> CEO, VP Marketing, Managing Directors, Sales Directors, Regional Sales Managers — aligned data roadmap with business objectives</li>
+        <li><b>Operating model:</b> matrix execution with <b class="num">3</b> direct / <b class="num">4</b> indirect reports; partnered across Finance, HR, Sales, Marketing, and R&D</li>
+        <li><b>Change management:</b> conducted workshops in Berlin, Dortmund, Rotterdam, Brussels, Warsaw, Milan, and Paris to drive adoption and stakeholder alignment</li>
+        <li><b>Governance framework:</b> built KRI tracking dashboards, AI governance guardrails, and automated compliance monitoring across all operating markets</li>
+      </ul>
+    </div>
+
+  </div><!-- end main page 2 -->
+</div><!-- end page 2 -->
+
+</body>
+</html>

@@ -91,7 +91,8 @@
             "Designed and maintained KPI dashboards in Power BI, driving a 2.1% QoQ sales increase and optimizing marketing spend; ensured seamless integration with SAP Analytics Cloud",
             "Increased engagement through dashboard gamification: 60% boost with a target audience of 1,800",
             "Personally liaised with the CEO & Marketing VP of Sonova to develop a board reporting KPI suite",
-            "Conducted change management workshops in Berlin, Dortmund, Rotterdam, Belgium, Warsaw, Milan and Paris"
+            "Conducted change management workshops in Berlin, Dortmund, Rotterdam, Brussels, Warsaw, Milan and Paris",
+            "Contributed to revenue growth and EBITDA expansion by enabling data-driven commercial decisions: KPI-aligned dashboards directly linked to P&L levers (pricing, mix, volume), enabling leadership to identify margin improvement opportunities"
           ],
           "metrics": [
             {
@@ -123,6 +124,12 @@
               "label": "Countries/Markets",
               "value": "20",
               "trend": "neutral"
+            },
+            {
+              "icon": "💰",
+              "label": "Revenue Impact",
+              "value": "EBITDA-linked",
+              "trend": "up"
             }
           ]
         }
@@ -144,7 +151,10 @@
           "bullets": [
             "Designed standardized market onboarding pipelines using Databricks + SQL/MS SQL (Azure where relevant) to enable consistent KPIs and reliable cross-country reporting",
             "Automated data collection and reporting pipelines: Reduced FTE time by 75%, Reduced reporting cycle time by 35%, Improved speed and accuracy of operational dashboards",
-            "Reduced sales forecasting cycle time by ~30% by improving data pipelines, refresh cadence, and reporting workflows to support faster commercial planning"
+            "Reduced sales forecasting cycle time by ~30% by improving data pipelines, refresh cadence, and reporting workflows to support faster commercial planning",
+            "Designed multi-layer lakehouse pipeline (Medallion architecture) with progressive quality gates: Bronze (raw CDC + file ingestion), Silver (standardized, deduped, conformed), Gold (curated domain marts — KPIs, dimensions, ML features) for BI and ML consumption",
+            "Established engineering KPI monitoring: MTTR (Mean Time to Recovery) < 30 min, MTTD (Mean Time to Detect) < 15 min for pipeline failures, tracked via automated alerting and incident dashboards",
+            "Implemented anomaly detection across pipeline layers: volume anomalies (row count drift), latency anomalies (SLA breaches), schema drift detection, and data distribution shifts using statistical thresholds"
           ],
           "metrics": [
             {
@@ -164,6 +174,42 @@
               "label": "Faster Sales Forecasting",
               "value": "30%",
               "trend": "up"
+            },
+            {
+              "icon": "🔧",
+              "label": "MTTR",
+              "value": "<30 min",
+              "trend": "up"
+            },
+            {
+              "icon": "🔍",
+              "label": "MTTD",
+              "value": "<15 min",
+              "trend": "up"
+            },
+            {
+              "icon": "🏗️",
+              "label": "Lakehouse Layers",
+              "value": "3 (B/S/G)",
+              "trend": "neutral"
+            }
+          ],
+          "subSections": [
+            {
+              "title": "Medallion Architecture (Bronze → Silver → Gold)",
+              "bullets": [
+                "Bronze: Raw CDC streams + file ingestion (JSON, CSV, Parquet) — append-only, full history retention",
+                "Silver: Standardized schemas, deduplication, data type conformance, business rule validation",
+                "Gold: Curated domain marts (KPIs, dimensions, ML feature stores) optimized for BI dashboards and ML pipelines"
+              ]
+            },
+            {
+              "title": "Engineering KPI Monitoring",
+              "bullets": [
+                "MTTR (Mean Time to Recovery): < 30 min target — automated runbooks and incident escalation",
+                "MTTD (Mean Time to Detect): < 15 min target — real-time alerting on pipeline failures and SLA breaches",
+                "Anomaly detection: volume drift, latency spikes, schema changes, data distribution shifts"
+              ]
             }
           ]
         }
@@ -185,7 +231,9 @@
           "bullets": [
             "Implemented Databricks governance using Unity Catalog to enforce centralized access controls and scalable cross-domain data sharing, strengthening auditability and data product reliability",
             "Operationalized pipeline reliability by defining SLOs (Service Level Objectives), embedding automated data quality checks (Great Expectations-style) into CI/CD pipelines, and monitoring freshness/schema drift to proactively prevent failures—contributing to 30% lower data downtime and 99.9% pipeline reliability",
-            "Ensured privacy/regulatory compliance across 20 jurisdictions, aligning with GDPR, local data protection acts, and emerging regulations like the EU AI Act"
+            "Ensured privacy/regulatory compliance across 20 jurisdictions, aligning with GDPR, local data protection acts, and emerging regulations like the EU AI Act",
+            "Designed and operationalized KRI (Key Risk Indicator) tracking and reporting framework: data quality KRIs (freshness, completeness, accuracy), pipeline reliability KRIs (SLO adherence, failure rates), compliance KRIs (access violations, PII exposure attempts)",
+            "Implemented anomaly detection at the governance layer using statistical process control and z-score monitoring to flag data quality drift, schema changes, and access pattern anomalies in near-real-time"
           ],
           "metrics": [
             {
@@ -205,9 +253,24 @@
               "label": "Jurisdictions",
               "value": "20",
               "trend": "neutral"
+            },
+            {
+              "icon": "🚨",
+              "label": "KRIs Tracked",
+              "value": "15+",
+              "trend": "neutral"
             }
           ],
           "subSections": [
+            {
+              "title": "Key Risk Indicators (KRIs)",
+              "bullets": [
+                "Data Quality KRIs: freshness SLAs, completeness thresholds, accuracy validation scores",
+                "Pipeline Reliability KRIs: SLO adherence rates, failure/retry rates, latency percentiles",
+                "Compliance KRIs: access violation counts, PII exposure attempts, audit trail completeness",
+                "Anomaly Detection: z-score monitoring for data volume drift, schema changes, and access pattern deviations"
+              ]
+            },
             {
               "title": "Compliance by Country (20 Jurisdictions)",
               "bullets": [
@@ -254,7 +317,9 @@
             "Implemented GenAI apps and chatbots for HR, Operations, and Marketing (requirements → build → rollout → adoption)",
             "Launched GenAI assistants across priority workflows with governance guardrails, improving service enablement outcomes by ~20%: Service ticket deflection, Product recommendations, HR org insights, New-store onboarding",
             "Scaled GenAI apps across company verticals (beyond audiological care): Hearing Instruments, Reliability, R&D, HR",
-            "Architected enterprise-scale RAG systems for internal knowledge management: Vector databases (e.g., Pinecone/Milvus), LangChain orchestration, Reduced hallucination rates by 90% and grounded outputs in proprietary corporate data",
+            "Designed end-to-end RAG pipeline: document ingestion → chunking (recursive/semantic) → embedding (OpenAI ada-002 / open-source alternatives) → vector store (Pinecone/Milvus) → retrieval-augmented generation with LangChain orchestration — reducing hallucination rates by 90% and grounding outputs in proprietary corporate data",
+            "Built FastAPI-based serving layer for GenAI products, enabling low-latency REST endpoints for chatbot inference, analytics queries, and batch processing across HR, Marketing, and Operations use cases",
+            "Developed smart analytics products that identify revenue blockers and growth drivers for Sales and Marketing teams, surfacing actionable insights from multi-source data (CRM, ERP, web analytics) to support commercial decision-making",
             "Established an AI Governance Board and implemented guardrails to sanitize inputs/outputs: Prevented PII leakage, Ensured compliance with emerging regulations like the EU AI Act, Enabled safe scaling of GenAI tools to 1,000+ employees across diverse jurisdictions"
           ],
           "metrics": [
@@ -275,6 +340,18 @@
               "label": "Employees Scaled",
               "value": "1,000+",
               "trend": "up"
+            },
+            {
+              "icon": "⚡",
+              "label": "FastAPI Endpoints",
+              "value": "5+",
+              "trend": "neutral"
+            },
+            {
+              "icon": "🔗",
+              "label": "RAG Pipeline Layers",
+              "value": "4",
+              "trend": "neutral"
             }
           ]
         }
@@ -293,14 +370,33 @@
         },
         "content": {
           "bullets": [
-            "Delivered a React.js strategic analytics app integrating multiple data sources for: HR (org/team planning, team shuffling, budget management), Marketing (qualified lead insights, store prioritization/targeting), Operations (underperformance monitoring, targeted interventions)"
+            "Delivered a React.js strategic analytics app integrating multiple data sources for: HR (org/team planning, team shuffling, budget management), Marketing (qualified lead insights, store prioritization/targeting), Operations (underperformance monitoring, targeted interventions)",
+            "Built AI-powered HR Org Chart product enabling smart organizational decisions: org network analysis (identifying key connectors and bottlenecks), succession planning recommendations, span-of-control optimization, and restructuring impact simulation",
+            "Practical applications: automated identification of single-point-of-failure roles, AI-suggested lateral moves for retention-risk employees, budget impact modeling for team restructuring scenarios, and headcount planning aligned to revenue targets",
+            "Served via FastAPI backend with React.js frontend, integrating HRIS data, performance metrics, and engagement survey signals for real-time organizational intelligence"
+          ],
+          "metrics": [
+            {
+              "icon": "🏢",
+              "label": "Org Intelligence",
+              "value": "AI-Powered",
+              "trend": "neutral"
+            },
+            {
+              "icon": "🔗",
+              "label": "Data Sources",
+              "value": "HRIS+Perf+Survey",
+              "trend": "neutral"
+            }
           ],
           "subSections": [
             {
-              "title": "HR Features",
+              "title": "HR Org Chart AI Features",
               "bullets": [
-                "Org/team planning (team shuffling)",
-                "Budget management"
+                "Org network analysis — identify key connectors, bottlenecks, and single-point-of-failure roles",
+                "Succession planning — AI-recommended successors based on skills, performance, and tenure",
+                "Span-of-control optimization — flag over/under-managed teams with restructuring recommendations",
+                "Budget impact modeling — simulate headcount changes and forecast cost implications"
               ]
             },
             {
@@ -393,7 +489,9 @@
             "Applied causal/optimization analytics to workforce planning: Improved utilization by ~6%, Improved productivity by ~5%",
             "Built predictive forecasting models (Scikit-learn, XGBoost) for in-store performance: Forecasted staffing needs from historical sales + foot traffic, Optimized labor costs",
             "Sales process optimization: Identified inefficiencies and built Power BI dashboards for daily management, Streamlined operations, increased resource utilization, implemented correct OKRs",
-            "Marketing effectiveness: Campaign performance reporting and Marketing ROI assessments, Built a custom actionable model with Sales/Marketing to improve customer journey and optimize marketing budget"
+            "Marketing effectiveness: Campaign performance reporting and Marketing ROI assessments, Built a custom actionable model with Sales/Marketing to improve customer journey and optimize marketing budget",
+            "Built anomaly detection models for sales and operational metrics, enabling early identification of underperformance and revenue leakage across markets",
+            "Developed revenue driver/blocker analysis framework: automated identification of top factors impacting sales conversion, customer retention, and marketing ROI using feature importance and SHAP values"
           ],
           "metrics": [
             {
@@ -436,7 +534,8 @@
             { "name": "SQL/MS SQL", "proficiency": "expert" },
             { "name": "Power BI", "proficiency": "expert" },
             { "name": "Azure", "proficiency": "advanced" },
-            { "name": "SAP Analytics Cloud", "proficiency": "advanced" }
+            { "name": "SAP Analytics Cloud", "proficiency": "advanced" },
+            { "name": "Medallion Architecture", "proficiency": "expert" }
           ]
         },
         {
@@ -455,6 +554,7 @@
           "technologies": [
             { "name": "React.js", "proficiency": "advanced" },
             { "name": "Python", "proficiency": "expert" },
+            { "name": "FastAPI", "proficiency": "advanced" },
             { "name": "Azure DevOps", "proficiency": "advanced" },
             { "name": "Jira", "proficiency": "advanced" }
           ]
@@ -466,6 +566,314 @@
             { "name": "Lean Six Sigma", "proficiency": "expert" },
             { "name": "DataOps", "proficiency": "expert" },
             { "name": "Data Governance", "proficiency": "expert" }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "company": "JPMorgan Chase",
+    "role": "Data Science Associate — Customer & Digital Analytics (Retail / Wealth Banking)",
+    "period": "Jun 2019 - Mar 2022",
+    "location": "Mumbai, India",
+    "locationType": "Hybrid",
+    "quickStats": {
+      "scale": [
+        "Retail & Wealth Banking",
+        "+16% MoM acquisition growth",
+        "+2.5% weekly client interactions",
+        "-8% drop-off/abandonment",
+        "+3.5% marketing ROI uplift"
+      ],
+      "impactAreas": 6,
+      "achievements": "20+ quantified achievements"
+    },
+    "sections": [
+      {
+        "id": "propensity-segmentation",
+        "title": "Propensity + Lifecycle Segmentation",
+        "icon": "🎯",
+        "order": 1,
+        "preview": {
+          "topMetrics": [
+            "+16% MoM new retirement account acquisitions",
+            "RFM/propensity models for high-intent cohorts",
+            "Customer segmentation at scale"
+          ],
+          "bulletCount": 3
+        },
+        "content": {
+          "bullets": [
+            "Built customer segmentation and RFM/propensity models to prioritize high-intent cohorts, driving +16% MoM growth in new retirement account acquisitions (Q2'21)",
+            "Designed lifecycle segmentation frameworks to classify customers by engagement stage, enabling targeted retention and upsell strategies across Retail and Wealth Banking",
+            "Partnered with Marketing and Product teams to translate model outputs into actionable campaign targeting rules, improving conversion rates across digital and branch channels"
+          ],
+          "metrics": [
+            {
+              "icon": "📈",
+              "label": "MoM Acquisition Growth",
+              "value": "+16%",
+              "trend": "up"
+            },
+            {
+              "icon": "🎯",
+              "label": "Cohort Targeting",
+              "value": "RFM",
+              "trend": "neutral"
+            },
+            {
+              "icon": "📊",
+              "label": "Product Focus",
+              "value": "Retirement",
+              "trend": "neutral"
+            }
+          ]
+        }
+      },
+      {
+        "id": "experimentation-uplift",
+        "title": "Experimentation, Uplift & Marketing ROI",
+        "icon": "🧪",
+        "order": 2,
+        "preview": {
+          "topMetrics": [
+            "Robust A/B testing program with incrementality readouts",
+            "Improved marketing ROI / CAC efficiency",
+            "Enabled data-driven budget allocation"
+          ],
+          "bulletCount": 3
+        },
+        "content": {
+          "bullets": [
+            "Designed a robust A/B testing program (incl. incrementality/uplift readouts) that enabled marketing teams to scale/stop initiatives with confidence and improve marketing ROI / CAC efficiency through better budget allocation",
+            "Built statistical frameworks for experiment design including power analysis, sample size calculation, and multi-variant testing to ensure rigorous measurement of campaign effectiveness",
+            "Created automated reporting pipelines for experiment results, reducing time-to-insight from weeks to days and enabling faster iteration on marketing strategies"
+          ],
+          "metrics": [
+            {
+              "icon": "🧪",
+              "label": "Testing Framework",
+              "value": "A/B + Uplift",
+              "trend": "neutral"
+            },
+            {
+              "icon": "💰",
+              "label": "ROI Impact",
+              "value": "CAC Optimized",
+              "trend": "up"
+            },
+            {
+              "icon": "📊",
+              "label": "Budget Allocation",
+              "value": "Data-Driven",
+              "trend": "up"
+            }
+          ]
+        }
+      },
+      {
+        "id": "next-best-action",
+        "title": "Next-Best-Action for Relationship Managers",
+        "icon": "🤝",
+        "order": 3,
+        "preview": {
+          "topMetrics": [
+            "+2.5% weekly client interactions",
+            "-8% drop-off/abandonment reduction",
+            "High-impact RM routing & scheduling"
+          ],
+          "bulletCount": 3
+        },
+        "content": {
+          "bullets": [
+            "Identified high-impact RMs/wealth advisors for underserved clients and implemented next-best-action style routing/scheduling, improving weekly client interactions by +2.5% and reducing drop-off/abandonment by -8%",
+            "Built propensity-to-engage models that scored client-advisor pairings, enabling intelligent matching of high-value clients with the most suitable relationship managers",
+            "Developed real-time recommendation engine that surfaced prioritized action items for RMs, including optimal contact timing, preferred channels, and personalized talking points"
+          ],
+          "metrics": [
+            {
+              "icon": "📈",
+              "label": "Weekly Interactions",
+              "value": "+2.5%",
+              "trend": "up"
+            },
+            {
+              "icon": "⬇️",
+              "label": "Drop-off Reduction",
+              "value": "-8%",
+              "trend": "up"
+            },
+            {
+              "icon": "🤝",
+              "label": "RM Optimization",
+              "value": "NBA Engine",
+              "trend": "neutral"
+            }
+          ]
+        }
+      },
+      {
+        "id": "digital-funnel-optimization",
+        "title": "Digital Adoption, Funnel & Conversion Optimization",
+        "icon": "📱",
+        "order": 4,
+        "preview": {
+          "topMetrics": [
+            "+16% higher digital engagement",
+            "End-to-end digital journey analysis",
+            "Page responsiveness improvements"
+          ],
+          "bulletCount": 3
+        },
+        "content": {
+          "bullets": [
+            "Analyzed end-to-end digital journeys (readership, video interactions, questionnaire/modules) to pinpoint funnel friction and prioritize content/features that delivered +16% higher engagement",
+            "Partnered with engineering to improve page responsiveness and customer experience, reducing load times and improving completion rates across key digital flows",
+            "Built funnel visualization dashboards that tracked user progression through multi-step digital processes, enabling product teams to identify and resolve conversion bottlenecks in real-time"
+          ],
+          "metrics": [
+            {
+              "icon": "📈",
+              "label": "Engagement Lift",
+              "value": "+16%",
+              "trend": "up"
+            },
+            {
+              "icon": "📱",
+              "label": "Digital Journeys",
+              "value": "E2E Analysis",
+              "trend": "neutral"
+            },
+            {
+              "icon": "⚡",
+              "label": "Page Performance",
+              "value": "Optimized",
+              "trend": "up"
+            }
+          ]
+        }
+      },
+      {
+        "id": "email-lifecycle-marketing",
+        "title": "Email Lifecycle Marketing (Matched-Pair Testing)",
+        "icon": "📧",
+        "order": 5,
+        "preview": {
+          "topMetrics": [
+            "+3.5% marketing budget utilization (ROI uplift)",
+            "Matched-pair A/B testing methodology",
+            "Trading feature launch campaign"
+          ],
+          "bulletCount": 3
+        },
+        "content": {
+          "bullets": [
+            "Improved email rewards campaign performance during a trading feature launch by using matched-pair A/B testing to isolate incremental impact and reallocate spend, delivering +3.5% more efficient marketing budget utilization (ROI uplift)",
+            "Designed matched-pair testing methodology that controlled for confounding variables (account age, AUM, trading frequency), providing statistically rigorous measurement of true campaign lift",
+            "Built automated email performance dashboards tracking open rates, click-through rates, conversion rates, and incremental revenue attribution across lifecycle stages"
+          ],
+          "metrics": [
+            {
+              "icon": "💰",
+              "label": "Budget Efficiency",
+              "value": "+3.5%",
+              "trend": "up"
+            },
+            {
+              "icon": "🧪",
+              "label": "Testing Method",
+              "value": "Matched-Pair",
+              "trend": "neutral"
+            },
+            {
+              "icon": "📧",
+              "label": "Campaign Type",
+              "value": "Lifecycle",
+              "trend": "neutral"
+            }
+          ]
+        }
+      },
+      {
+        "id": "retention-churn-analytics",
+        "title": "Retention, Attrition & Churn Analytics (Volatility)",
+        "icon": "🛡️",
+        "order": 6,
+        "preview": {
+          "topMetrics": [
+            "Trader lifecycle models (DAU/WAU/MAU)",
+            "BCG-style portfolio view for attrition risk",
+            "GameStop market volatility response (2021)"
+          ],
+          "bulletCount": 3
+        },
+        "content": {
+          "bullets": [
+            "Built trader lifecycle models (daily/weekly/monthly active, retained, churned) using a BCG-style portfolio view to flag attrition risk and support proactive retention actions during the GameStop market volatility (2021)",
+            "Developed early-warning churn prediction models using behavioral signals (login frequency, trade volume decline, support ticket patterns) to identify at-risk traders before they churned",
+            "Created executive dashboards tracking retention cohorts, LTV trajectories, and win-back campaign effectiveness, enabling leadership to make data-driven decisions during periods of extreme market volatility"
+          ],
+          "metrics": [
+            {
+              "icon": "🛡️",
+              "label": "Lifecycle Models",
+              "value": "DAU/WAU/MAU",
+              "trend": "neutral"
+            },
+            {
+              "icon": "📊",
+              "label": "Framework",
+              "value": "BCG Portfolio",
+              "trend": "neutral"
+            },
+            {
+              "icon": "⚡",
+              "label": "Context",
+              "value": "GameStop (2021)",
+              "trend": "neutral"
+            }
+          ]
+        }
+      }
+    ],
+    "techStack": {
+      "categories": [
+        {
+          "name": "Data Science & ML",
+          "technologies": [
+            { "name": "Python", "proficiency": "expert" },
+            { "name": "Scikit-learn", "proficiency": "expert" },
+            { "name": "XGBoost", "proficiency": "advanced" },
+            { "name": "Pandas/NumPy", "proficiency": "expert" },
+            { "name": "SciPy/StatsModels", "proficiency": "advanced" }
+          ]
+        },
+        {
+          "name": "Analytics & Experimentation",
+          "technologies": [
+            { "name": "A/B Testing", "proficiency": "expert" },
+            { "name": "Uplift Modeling", "proficiency": "advanced" },
+            { "name": "RFM Analysis", "proficiency": "expert" },
+            { "name": "Propensity Modeling", "proficiency": "expert" },
+            { "name": "Causal Inference", "proficiency": "advanced" }
+          ]
+        },
+        {
+          "name": "Data Engineering & BI",
+          "technologies": [
+            { "name": "SQL", "proficiency": "expert" },
+            { "name": "Tableau", "proficiency": "advanced" },
+            { "name": "Hadoop/Hive", "proficiency": "advanced" },
+            { "name": "Spark", "proficiency": "advanced" }
+          ]
+        },
+        {
+          "name": "Domain Expertise",
+          "technologies": [
+            { "name": "Retail Banking", "proficiency": "expert" },
+            { "name": "Wealth Management", "proficiency": "advanced" },
+            { "name": "Customer Analytics", "proficiency": "expert" },
+            { "name": "Marketing Science", "proficiency": "expert" }
           ]
         }
       ]
